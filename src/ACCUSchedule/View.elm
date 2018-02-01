@@ -349,6 +349,6 @@ view model =
         Grid.container []
             [ CDN.stylesheet
             , header model
-            , main
+            , div [class "main-body"] [main]
             , footer model
             ]
