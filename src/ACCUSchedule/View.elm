@@ -1,7 +1,6 @@
 module ACCUSchedule.View exposing (view)
 
--- import ACCUSchedule.Asciidoc as Asciidoc
-
+import ACCUSchedule.Asciidoc as Asciidoc
 import ACCUSchedule.Model as Model
 import ACCUSchedule.Msg as Msg
 import ACCUSchedule.Routing as Routing
@@ -27,19 +26,12 @@ import Html.Attributes exposing (height, href, src)
 import List.Extra exposing (stableSortWith)
 import Markdown
 
-
--- presenterCardGroup : Int
--- presenterCardGroup =
---     1
--- searchFieldControlGroup : Int
--- searchFieldControlGroup =
---     2
--- {-| Find a proposal based on a string representation of its id.
---    This is just convenience for parsing the route.
--- -}
--- findProposal : Model.Model -> Types.ProposalId -> Maybe Types.Proposal
--- findProposal model id =
---     (List.filter (\p -> p.id == id) model.proposals) |> List.head
+{-| Find a proposal based on a string representation of its id.
+   This is just convenience for parsing the route.
+-}
+findProposal : Model.Model -> Types.ProposalId -> Maybe Types.Proposal
+findProposal model id =
+    (List.filter (\p -> p.id == id) model.proposals) |> List.head
 
 
 {-| Find a presenter based on a string representation of its id.
@@ -155,37 +147,32 @@ dayView model proposals day =
 --             ]
 --     in
 --         List.concatMap dview Days.conferenceDays
--- {-| Display a single proposal. This includes all of the details of the proposal,
--- including the full text of the abstract.
--- -}
--- proposalView : Model.Model -> Types.Proposal -> Html Msg.Msg
--- proposalView model proposal =
---     let
---         room =
---             Rooms.toString proposal.room
---         session =
---             Sessions.toString proposal.session
---         location =
---             session ++ ", " ++ room
---     in
---         Options.div
---             [ Options.css "display" "flex"
---             , Options.css "flex-flow" "row wrap"
---               -- , Options.css "justify" "center"
---             , Options.css "justify-content" "flex-start"
---             , Options.css "align-items" "flex-start"
---             ]
---             [ Options.styled p
---                 []
---                 [ proposalCard  model proposal ]
---             , Options.styled p
---                 [ Typo.body1
---                 , Options.css "width" "30em"
---                 , Options.css "margin-left" "10px"
---                 ]
---                 [ Asciidoc.toHtml [] proposal.text ]
---             ]
 
+{-| Display a single proposal. This includes all of the details of the proposal,
+including the full text of the abstract.
+-}
+proposalView : Model.Model -> Types.Proposal -> Html Msg.Msg
+proposalView model proposal =
+    let
+        room =
+            Rooms.toString proposal.room
+        session =
+            Sessions.toString proposal.session
+        location =
+            session ++ ", " ++ room
+    in
+        Grid.container
+            []
+            [ Grid.row
+                  []
+                  [ Grid.col
+                        [ Col.xs4 ]
+                        [ Card.view <| proposalCard model proposal ]
+                  , Grid.col
+                      [ Col.xs8 ]
+                      [ Asciidoc.toHtml [] proposal.text ]
+                  ]
+            ]
 
 {-| Display a single presenter
 -}
@@ -281,12 +268,13 @@ view model =
                 Routing.Day day ->
                     dayView model model.proposals day
 
-                --                 Routing.Proposal id ->
-                --                     case findProposal model id of
-                --                         Just proposal ->
-                --                             [ proposalView model proposal ]
-                --                         Nothing ->
-                --                             [ notFoundView ]
+                Routing.Proposal id ->
+                    case findProposal model id of
+                        Just proposal ->
+                            [ proposalView model proposal ]
+                        Nothing ->
+                            [ notFoundView ]
+
                 Routing.Presenter id ->
                     case findPresenter model id of
                         Just presenter ->
