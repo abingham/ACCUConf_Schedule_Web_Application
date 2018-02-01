@@ -4,10 +4,7 @@ import ACCUSchedule.Asciidoc as Asciidoc
 import ACCUSchedule.Model as Model
 import ACCUSchedule.Msg as Msg
 import ACCUSchedule.Routing as Routing
-
-
--- import ACCUSchedule.Search as Search
-
+import ACCUSchedule.Search as Search
 import ACCUSchedule.Types as Types
 import ACCUSchedule.Types.Days as Days
 import ACCUSchedule.Types.QuickieSlots as QuickieSlots
@@ -19,6 +16,7 @@ import ACCUSchedule.View.Theme as Theme
 import Bootstrap.Badge as Badge
 import Bootstrap.Card as Card
 import Bootstrap.CDN as CDN
+import Bootstrap.Form.Input as Input
 import Bootstrap.Grid as Grid
 import Bootstrap.Grid.Col as Col
 import Bootstrap.Navbar as Navbar
@@ -42,17 +40,6 @@ This is just convenience for parsing the route.
 findPresenter : Model.Model -> Types.PresenterId -> Maybe Types.Presenter
 findPresenter model id =
     (List.filter (\p -> p.id == id) model.presenters) |> List.head
-
-
-
---                [ text <| Days.toString proposal.day ]
--- flowView : List (Html Msg.Msg) -> Html Msg.Msg
--- flowView elems =
---     Options.div
---         [ Options.css "display" "flex"
---         , Options.css "flex-flow" "row wrap"
---         ]
---         elems
 
 
 sessionView : Model.Model -> List Types.Proposal -> Sessions.Session -> Html Msg.Msg
@@ -197,12 +184,11 @@ presentersView model =
         |> Card.group
 
 
-
--- searchView : String -> Model.Model -> Html Msg.Msg
--- searchView term model =
---     Search.search term model
---         |> List.map (proposalCard  model)
---         |> flowView
+searchView : String -> Model.Model -> Html Msg.Msg
+searchView term model =
+    Search.search term model
+        |> List.map (proposalCard model)
+        |> Card.group
 
 
 notFoundView : Html Msg.Msg
@@ -289,8 +275,9 @@ view model =
                 Routing.Agenda ->
                     agendaView model
 
-                --                 Routing.Search term ->
-                --                     [ searchView term model ]
+                Routing.Search term ->
+                    [ searchView term model ]
+
                 _ ->
                     [ notFoundView ]
 
@@ -317,12 +304,13 @@ view model =
                 _ ->
                     ""
 
-        --         searchString =
-        --             case model.location of
-        --                 Routing.Search x ->
-        --                     x
-        --                 _ ->
-        --                     ""
+        searchString =
+            case model.location of
+                Routing.Search x ->
+                    x
+
+                _ ->
+                    ""
     in
         Grid.container []
             ([ CDN.stylesheet
@@ -356,7 +344,13 @@ view model =
                     ]
                 |> Navbar.customItems
                     [ Navbar.textItem [] [ text pageName ]
-                    ]
+                    , Navbar.formItem []
+                        [ Input.search
+                              [ Input.onInput Msg.VisitSearch
+                              , Input.placeholder "Search"
+                              ]
+                        ]
+                   ]
                 |> Navbar.view model.navbarState
              ]
                 ++ main
