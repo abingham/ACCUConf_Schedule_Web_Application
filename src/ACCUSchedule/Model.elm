@@ -32,6 +32,7 @@ type alias Model =
     , location : Routing.RoutePath
     , view : ViewModel
     , navbarState : Navbar.State
+    , footerState : Navbar.State
     }
 
 
@@ -90,5 +91,6 @@ initialModel apiBaseUrl bookmarks location =
          , location = Routing.parseLocation location
          , view = { raisedProposal = Nothing, raisedPresenter = Nothing }
          , navbarState = navbarState
+         , footerState = navbarState
          }
         , navbarCmd)

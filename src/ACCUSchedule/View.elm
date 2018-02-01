@@ -213,38 +213,6 @@ agendaLink =
     dropdownLink Routing.agendaUrl "Your agenda"
 
 
-
--- footer : Html Msg.Msg
--- footer =
---     Footer.mini []
---         { left =
---             Footer.left []
---                 [ Footer.logo [] [ Footer.html <| text "ACCU 2017 Schedule" ]
---                 , Footer.links []
---                     [ Footer.linkItem
---                         [ Footer.href "https://conference.accu.org/site" ]
---                         [ Footer.html <| text "Conference" ]
---                     , Footer.linkItem
---                         [ Footer.href "https://github.com/abingham/accu-2017-elm-app" ]
---                         [ Footer.html <| img [ src "./static/img/GitHub-Mark-Light-32px.png" ] [] ]
---                     ]
---                 ]
---         , right =
---             Footer.right []
---                 [ Footer.links []
---                     [ Footer.linkItem
---                         [ Footer.href "https://sixty-north.com" ]
---                         [ Footer.html <| text "© 2017 Sixty North AS "
---                         , Footer.html <|
---                             Options.img
---                                 [ Options.css "height" "20px" ]
---                                 [ src "static/img/sixty-north-logo.png" ]
---                         ]
---                     ]
---                 ]
---         }
-
-
 view : Model.Model -> Html Msg.Msg
 view model =
     let
@@ -315,6 +283,7 @@ view model =
         Grid.container []
             ([ CDN.stylesheet
              , Navbar.config Msg.NavbarMsg
+                |> Navbar.fixTop
                 |> Navbar.withAnimation
                 |> Navbar.lightCustom Theme.background
                 |> Navbar.brand [ href "#" ] [ img [ src "./static/img/accu-logo.png", height 50 ] [] ]
@@ -346,84 +315,29 @@ view model =
                     [ Navbar.textItem [] [ text pageName ]
                     , Navbar.formItem []
                         [ Input.search
-                              [ Input.onInput Msg.VisitSearch
-                              , Input.placeholder "Search"
-                              ]
+                            [ Input.onInput Msg.VisitSearch
+                            , Input.placeholder "Search"
+                            ]
                         ]
-                   ]
+                    ]
                 |> Navbar.view model.navbarState
              ]
                 ++ main
+                ++ [ Navbar.config Msg.NavbarMsg
+                        |> Navbar.fixBottom
+                        |> Navbar.lightCustom Theme.background
+                        |> Navbar.brand [] [ text "ACCU 2017 Schedule" ]
+                        |> Navbar.items
+                            [ Navbar.itemLink [ href "https://conference.accu.org/site" ] [ text "Conference" ]
+                            , Navbar.itemLink [ href "https://github.com/ACCUConf/ACCUConf_Submission_Web_Application" ] [ img [ src "./static/img/GitHub-Mark-Light-32px.png" ] [] ]
+                            ]
+                        |> Navbar.customItems
+                            [ Navbar.customItem <|
+                                a [ href "https://sixty-north.com" ]
+                                    [ text "© 2017-2018 Sixty North AS "
+                                    , img [ src "./static/img/GitHub-Mark-Light-32px.png" ] []
+                                    ]
+                            ]
+                        |> Navbar.view model.footerState
+                   ]
             )
-
-
-
---     in
---         div
---             []
---             [ Layout.render Msg.Mdl
---                 model.mdl
---                 [ Layout.fixedHeader
---                 ]
---                 { header =
---                     [ Layout.row
---                         [ Color.background Theme.background ]
---                         [ img [ src "./static/img/accu-logo.png", height 50 ] []
---                         , Layout.spacer
---                         , Layout.title
---                             [ Typo.title ]
---                             [ text pageName ]
---                         , Layout.spacer
---                         , Layout.title
---                             [ Typo.title
---                             , Options.onInput Msg.VisitSearch
---                             ]
---                             [ Textfield.render Msg.Mdl
---                                 [ searchFieldControlGroup ]
---                                 model.mdl
---                                 [ Textfield.label "Search"
---                                 , Textfield.floatingLabel
---                                 , Textfield.value searchString
---                                 , Textfield.expandable "search-field"
---                                 , Textfield.expandableIcon "search"
---                                 ]
---                                 []
---                             ]
---                         ]
---                     ]
---                 , drawer =
---                     [ Layout.title [] [ text "ACCU 2017" ]
---                     , Layout.navigation [] <|
---                         List.concat
---                             [ List.map
---                                 dayLink
---                                 Days.conferenceDays
---                             , [ Html.hr [] []
---                               , dropdownLink Routing.presentersUrl "Presenters"
---                               , Html.hr [] []
---                               , agendaLink
---                               , Layout.spacer
---                               , Layout.link
---                                     [ Options.onClick <|
---                                         Msg.Batch
---                                             [ Msg.FetchData
---                                             , Layout.toggleDrawer Msg.Mdl
---                                             ]
---                                     ]
---                                     [ text "Refresh"
---                                     ]
---                               ]
---                             ]
---                     ]
---                 , tabs = ( [], [] )
---                 , main =
---                     [ Options.styled div
---                         [ Options.css "margin-left" "10px"
---                         , Options.css "margin-top" "10px"
---                         , Options.css "margin-bottom" "10px"
---                         ]
---                         main
---                     , footer
---                     ]
---                 }
---             ]
