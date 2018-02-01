@@ -21,7 +21,7 @@ import Bootstrap.Grid as Grid
 import Bootstrap.Grid.Col as Col
 import Bootstrap.Navbar as Navbar
 import Html exposing (a, br, div, h1, Html, img, p, text)
-import Html.Attributes exposing (height, href, src)
+import Html.Attributes exposing (height, href, src, style)
 import List.Extra exposing (stableSortWith)
 import Markdown
 
@@ -93,7 +93,7 @@ sessionView model props session =
 
 {-| Display all proposals for a particular day.
 -}
-dayView : Model.Model -> List Types.Proposal -> Days.Day -> List (Html Msg.Msg)
+dayView : Model.Model -> List Types.Proposal -> Days.Day -> Html Msg.Msg
 dayView model proposals day =
     let
         props =
@@ -105,14 +105,15 @@ dayView model proposals day =
         -- >> Options.styled div
         --     [ Options.css "margin-bottom" "10px" ]
     in
-        List.map
-            sview
-            Sessions.conferenceSessions
+        div [] <|
+            List.map
+                sview
+                Sessions.conferenceSessions
 
 
 {-| Display all "bookmarked" proposals, i.e. the users personal agenda.
 -}
-agendaView : Model.Model -> List (Html Msg.Msg)
+agendaView : Model.Model -> Html Msg.Msg
 agendaView model =
     let
         props =
@@ -127,6 +128,7 @@ agendaView model =
             ]
     in
         List.concatMap dview Days.conferenceDays
+            |> div []
 
 
 {-| Display a single proposal. This includes all of the details of the proposal,
@@ -213,42 +215,9 @@ agendaLink =
     dropdownLink Routing.agendaUrl "Your agenda"
 
 
-view : Model.Model -> Html Msg.Msg
-view model =
+header : Model.Model -> Html.Html Msg.Msg
+header model =
     let
-        main =
-            case model.location of
-                Routing.Day day ->
-                    dayView model model.proposals day
-
-                Routing.Proposal id ->
-                    case findProposal model id of
-                        Just proposal ->
-                            [ proposalView model proposal ]
-
-                        Nothing ->
-                            [ notFoundView ]
-
-                Routing.Presenter id ->
-                    case findPresenter model id of
-                        Just presenter ->
-                            [ presenterView model presenter ]
-
-                        Nothing ->
-                            [ notFoundView ]
-
-                Routing.Presenters ->
-                    [ presentersView model ]
-
-                Routing.Agenda ->
-                    agendaView model
-
-                Routing.Search term ->
-                    [ searchView term model ]
-
-                _ ->
-                    [ notFoundView ]
-
         pageName =
             case model.location of
                 Routing.Day day ->
@@ -271,6 +240,103 @@ view model =
 
                 _ ->
                     ""
+    in
+        Navbar.config Msg.NavbarMsg
+            |> Navbar.fixTop
+            |> Navbar.withAnimation
+            |> Navbar.lightCustom Theme.background
+            |> Navbar.brand [ href "#" ] [ img [ src "./static/img/accu-logo.png", height 50 ] [] ]
+            |> Navbar.items
+                [ Navbar.dropdown
+                    { id = "drawer id"
+                    , toggle = Navbar.dropdownToggle [] [ text "hola!" ]
+                    , items =
+                        List.concat
+                            [ List.map dayLink Days.conferenceDays
+                            , [ Navbar.dropdownDivider
+                              , dropdownLink Routing.presentersUrl "Presenters"
+                              , Navbar.dropdownDivider
+                              , agendaLink
+                              , Navbar.dropdownDivider
+                              , Navbar.dropdownItem
+                                    [-- Options.onClick <|
+                                     --                                         Msg.Batch
+                                     --                                             [ Msg.FetchData
+                                     --                                             , Layout.toggleDrawer Msg.Mdl
+                                     --                                             ]
+                                    ]
+                                    [ text "Refresh" ]
+                              ]
+                            ]
+                    }
+                ]
+            |> Navbar.customItems
+                [ Navbar.textItem [] [ text pageName ]
+                , Navbar.formItem []
+                    [ Input.search
+                        [ Input.onInput Msg.VisitSearch
+                        , Input.placeholder "Search"
+                        ]
+                    ]
+                ]
+            |> Navbar.view model.navbarState
+
+
+footer : Model.Model -> Html.Html Msg.Msg
+footer model =
+    Navbar.config Msg.NavbarMsg
+        |> Navbar.fixBottom
+        |> Navbar.lightCustom Theme.background
+        |> Navbar.brand [] [ text "ACCU 2017 Schedule" ]
+        |> Navbar.items
+            [ Navbar.itemLink [ href "https://conference.accu.org/site" ] [ text "Conference" ]
+            , Navbar.itemLink [ href "https://github.com/ACCUConf/ACCUConf_Submission_Web_Application" ] [ img [ src "./static/img/GitHub-Mark-Light-32px.png" ] [] ]
+            ]
+        |> Navbar.customItems
+            [ Navbar.customItem <|
+                a [ href "https://sixty-north.com" ]
+                    [ text "© 2017-2018 Sixty North AS "
+                    , img [ style [("height", "20px")], src "./static/img/sixty-north-logo.png" ] []
+                    ]
+            ]
+        |> Navbar.view model.footerState
+
+
+view : Model.Model -> Html Msg.Msg
+view model =
+    let
+        main =
+            case model.location of
+                Routing.Day day ->
+                    dayView model model.proposals day
+
+                Routing.Proposal id ->
+                    case findProposal model id of
+                        Just proposal ->
+                            proposalView model proposal
+
+                        Nothing ->
+                            notFoundView
+
+                Routing.Presenter id ->
+                    case findPresenter model id of
+                        Just presenter ->
+                            presenterView model presenter
+
+                        Nothing ->
+                            notFoundView
+
+                Routing.Presenters ->
+                    presentersView model
+
+                Routing.Agenda ->
+                    agendaView model
+
+                Routing.Search term ->
+                    searchView term model
+
+                _ ->
+                    notFoundView
 
         searchString =
             case model.location of
@@ -281,63 +347,8 @@ view model =
                     ""
     in
         Grid.container []
-            ([ CDN.stylesheet
-             , Navbar.config Msg.NavbarMsg
-                |> Navbar.fixTop
-                |> Navbar.withAnimation
-                |> Navbar.lightCustom Theme.background
-                |> Navbar.brand [ href "#" ] [ img [ src "./static/img/accu-logo.png", height 50 ] [] ]
-                |> Navbar.items
-                    [ Navbar.dropdown
-                        { id = "drawer id"
-                        , toggle = Navbar.dropdownToggle [] [ text "hola!" ]
-                        , items =
-                            List.concat
-                                [ List.map dayLink Days.conferenceDays
-                                , [ Navbar.dropdownDivider
-                                  , dropdownLink Routing.presentersUrl "Presenters"
-                                  , Navbar.dropdownDivider
-                                  , agendaLink
-                                  , Navbar.dropdownDivider
-                                  , Navbar.dropdownItem
-                                        [-- Options.onClick <|
-                                         --                                         Msg.Batch
-                                         --                                             [ Msg.FetchData
-                                         --                                             , Layout.toggleDrawer Msg.Mdl
-                                         --                                             ]
-                                        ]
-                                        [ text "Refresh" ]
-                                  ]
-                                ]
-                        }
-                    ]
-                |> Navbar.customItems
-                    [ Navbar.textItem [] [ text pageName ]
-                    , Navbar.formItem []
-                        [ Input.search
-                            [ Input.onInput Msg.VisitSearch
-                            , Input.placeholder "Search"
-                            ]
-                        ]
-                    ]
-                |> Navbar.view model.navbarState
-             ]
-                ++ main
-                ++ [ Navbar.config Msg.NavbarMsg
-                        |> Navbar.fixBottom
-                        |> Navbar.lightCustom Theme.background
-                        |> Navbar.brand [] [ text "ACCU 2017 Schedule" ]
-                        |> Navbar.items
-                            [ Navbar.itemLink [ href "https://conference.accu.org/site" ] [ text "Conference" ]
-                            , Navbar.itemLink [ href "https://github.com/ACCUConf/ACCUConf_Submission_Web_Application" ] [ img [ src "./static/img/GitHub-Mark-Light-32px.png" ] [] ]
-                            ]
-                        |> Navbar.customItems
-                            [ Navbar.customItem <|
-                                a [ href "https://sixty-north.com" ]
-                                    [ text "© 2017-2018 Sixty North AS "
-                                    , img [ src "./static/img/GitHub-Mark-Light-32px.png" ] []
-                                    ]
-                            ]
-                        |> Navbar.view model.footerState
-                   ]
-            )
+            [ CDN.stylesheet
+            , header model
+            , main
+            , footer model
+            ]
