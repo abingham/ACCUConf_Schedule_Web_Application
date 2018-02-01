@@ -16,6 +16,7 @@ import ACCUSchedule.Types.Sessions as Sessions
 import ACCUSchedule.View.PresenterCard exposing (presenterCard)
 import ACCUSchedule.View.ProposalCard exposing (proposalCard)
 import ACCUSchedule.View.Theme as Theme
+import Bootstrap.Badge as Badge
 import Bootstrap.Card as Card
 import Bootstrap.CDN as CDN
 import Bootstrap.Grid as Grid
@@ -26,8 +27,9 @@ import Html.Attributes exposing (height, href, src)
 import List.Extra exposing (stableSortWith)
 import Markdown
 
+
 {-| Find a proposal based on a string representation of its id.
-   This is just convenience for parsing the route.
+This is just convenience for parsing the route.
 -}
 findProposal : Model.Model -> Types.ProposalId -> Maybe Types.Proposal
 findProposal model id =
@@ -121,32 +123,24 @@ dayView model proposals day =
             Sessions.conferenceSessions
 
 
+{-| Display all "bookmarked" proposals, i.e. the users personal agenda.
+-}
+agendaView : Model.Model -> List (Html Msg.Msg)
+agendaView model =
+    let
+        props =
+            List.filter (\p -> List.member p.id model.bookmarks) model.proposals
+                |> List.sortBy (.session >> Sessions.ordinal)
 
--- {-| Display all "bookmarked" proposals, i.e. the users personal agenda.
--- -}
--- agendaView : Model.Model -> List (Html Msg.Msg)
--- agendaView model =
---     let
---         props =
---             List.filter (\p -> List.member p.id model.bookmarks) model.proposals
---                 |> List.sortBy (.session >> Sessions.ordinal)
---         dview day =
---             [ Chip.span
---                 [ Options.css "margin-bottom" "5px"
---                 , Elevation.e2
---                 ]
---                 [ Chip.content []
---                     [ Layout.link
---                         [ Layout.href <| Routing.dayUrl day ]
---                         [ text <| Days.toString day ]
---                     ]
---                 ]
---             , List.filter (.day >> (==) day) props
---                 |> List.map (proposalCard  model)
---                 |> flowView
---             ]
---     in
---         List.concatMap dview Days.conferenceDays
+        dview day =
+            [ Badge.badgeInfo [] [ a [ href <| Routing.dayUrl day ] [ text <| Days.toString day ] ]
+            , List.filter (.day >> (==) day) props
+                |> List.map (proposalCard model)
+                |> Card.group
+            ]
+    in
+        List.concatMap dview Days.conferenceDays
+
 
 {-| Display a single proposal. This includes all of the details of the proposal,
 including the full text of the abstract.
@@ -156,23 +150,26 @@ proposalView model proposal =
     let
         room =
             Rooms.toString proposal.room
+
         session =
             Sessions.toString proposal.session
+
         location =
             session ++ ", " ++ room
     in
         Grid.container
             []
             [ Grid.row
-                  []
-                  [ Grid.col
-                        [ Col.xs4 ]
-                        [ Card.view <| proposalCard model proposal ]
-                  , Grid.col
-                      [ Col.xs8 ]
-                      [ Asciidoc.toHtml [] proposal.text ]
-                  ]
+                []
+                [ Grid.col
+                    [ Col.xs4 ]
+                    [ Card.view <| proposalCard model proposal ]
+                , Grid.col
+                    [ Col.xs8 ]
+                    [ Asciidoc.toHtml [] proposal.text ]
+                ]
             ]
+
 
 {-| Display a single presenter
 -}
@@ -191,12 +188,15 @@ presenterView model presenter =
             ]
         ]
 
+
 presentersView : Model.Model -> Html Msg.Msg
 presentersView model =
     model.presenters
         |> List.sortBy .lastName
         |> List.map (presenterCard model)
         |> Card.group
+
+
 
 -- searchView : String -> Model.Model -> Html Msg.Msg
 -- searchView term model =
@@ -271,6 +271,7 @@ view model =
                     case findProposal model id of
                         Just proposal ->
                             [ proposalView model proposal ]
+
                         Nothing ->
                             [ notFoundView ]
 
@@ -284,8 +285,10 @@ view model =
 
                 Routing.Presenters ->
                     [ presentersView model ]
-                --                 Routing.Agenda ->
-                --                     agendaView model
+
+                Routing.Agenda ->
+                    agendaView model
+
                 --                 Routing.Search term ->
                 --                     [ searchView term model ]
                 _ ->
