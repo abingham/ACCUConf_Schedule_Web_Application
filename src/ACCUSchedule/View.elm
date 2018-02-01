@@ -191,14 +191,13 @@ presenterView model presenter =
             ]
         ]
 
+presentersView : Model.Model -> Html Msg.Msg
+presentersView model =
+    model.presenters
+        |> List.sortBy .lastName
+        |> List.map (presenterCard model)
+        |> Card.group
 
-
--- presentersView : Model.Model -> Html Msg.Msg
--- presentersView model =
---     model.presenters
---         |> List.sortBy .lastName
---         |> List.map (presenterCard presenterCardGroup model)
---         |> flowView
 -- searchView : String -> Model.Model -> Html Msg.Msg
 -- searchView term model =
 --     Search.search term model
@@ -283,8 +282,8 @@ view model =
                         Nothing ->
                             [ notFoundView ]
 
-                --                 Routing.Presenters ->
-                --                     [ presentersView model ]
+                Routing.Presenters ->
+                    [ presentersView model ]
                 --                 Routing.Agenda ->
                 --                     agendaView model
                 --                 Routing.Search term ->
