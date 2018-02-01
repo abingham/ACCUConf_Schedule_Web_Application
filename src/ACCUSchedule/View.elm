@@ -21,7 +21,7 @@ import Bootstrap.Grid as Grid
 import Bootstrap.Grid.Col as Col
 import Bootstrap.Navbar as Navbar
 import Html exposing (a, br, div, h1, Html, img, p, text)
-import Html.Attributes exposing (height, href, src, style)
+import Html.Attributes exposing (class, height, href, src)
 import List.Extra exposing (stableSortWith)
 import Markdown
 
@@ -296,7 +296,7 @@ footer model =
             [ Navbar.customItem <|
                 a [ href "https://sixty-north.com" ]
                     [ text "© 2017-2018 Sixty North AS "
-                    , img [ style [("height", "20px")], src "./static/img/sixty-north-logo.png" ] []
+                    , img [ class "footer-icon", src "./static/img/sixty-north-logo.png" ] []
                     ]
             ]
         |> Navbar.view model.footerState
