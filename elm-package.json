@@ -9,6 +9,7 @@
     "exposed-modules": [],
     "native-modules": true,
     "dependencies": {
+        "1602/elm-feather": "2.2.0 <= v < 3.0.0",
         "Fresheyeball/elm-return": "6.0.3 <= v < 7.0.0",
         "NoRedInk/elm-decode-pipeline": "3.0.0 <= v < 4.0.0",
         "danyx23/elm-uuid": "2.0.2 <= v < 3.0.0",
@@ -17,6 +18,7 @@
         "elm-lang/html": "2.0.0 <= v < 3.0.0",
         "elm-lang/http": "1.0.0 <= v < 2.0.0",
         "elm-lang/navigation": "2.1.0 <= v < 3.0.0",
+        "elm-lang/svg": "2.0.0 <= v < 3.0.0",
         "evancz/elm-markdown": "3.0.1 <= v < 4.0.0",
         "evancz/url-parser": "2.0.1 <= v < 3.0.0",
         "justinmimbs/elm-date-extra": "2.0.2 <= v < 3.0.0",

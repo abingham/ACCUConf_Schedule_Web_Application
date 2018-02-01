@@ -8,30 +8,36 @@ import ACCUSchedule.Routing as Routing
 
 
 -- import ACCUSchedule.Search as Search
--- import ACCUSchedule.Types as Types
 
+import ACCUSchedule.Types as Types
 import ACCUSchedule.Types.Days as Days
+import ACCUSchedule.Types.QuickieSlots as QuickieSlots
+import ACCUSchedule.Types.Rooms as Rooms
+import ACCUSchedule.Types.Sessions as Sessions
 
 
--- import ACCUSchedule.Types.QuickieSlots as QuickieSlots
--- import ACCUSchedule.Types.Rooms as Rooms
--- import ACCUSchedule.Types.Sessions as Sessions
 -- import ACCUSchedule.View.PresenterCard exposing (presenterCard)
--- import ACCUSchedule.View.ProposalCard exposing (proposalCard)
 
+import ACCUSchedule.View.ProposalCard exposing (proposalCard)
 import ACCUSchedule.View.Theme as Theme
+import Bootstrap.Card as Card
 import Bootstrap.CDN as CDN
 import Bootstrap.Grid as Grid
 import Bootstrap.Navbar as Navbar
 import Html exposing (a, br, div, h1, Html, img, p, text)
 import Html.Attributes exposing (height, href, src)
+import List.Extra exposing (stableSortWith)
 
 
--- import List.Extra exposing (stableSortWith)
 -- import Markdown
--- proposalCardGroup : Int
--- proposalCardGroup =
---     0
+
+
+proposalCardGroup : Int
+proposalCardGroup =
+    0
+
+
+
 -- presenterCardGroup : Int
 -- presenterCardGroup =
 --     1
@@ -50,6 +56,7 @@ import Html.Attributes exposing (height, href, src)
 -- findPresenter : Model.Model -> Types.PresenterId -> Maybe Types.Presenter
 -- findPresenter model id =
 --     (List.filter (\p -> p.id == id) model.presenters) |> List.head
+--                 [ text <| Days.toString proposal.day ]
 -- flowView : List (Html Msg.Msg) -> Html Msg.Msg
 -- flowView elems =
 --     Options.div
@@ -57,63 +64,77 @@ import Html.Attributes exposing (height, href, src)
 --         , Options.css "flex-flow" "row wrap"
 --         ]
 --         elems
--- sessionView : Model.Model -> List Types.Proposal -> Sessions.Session -> List (Html Msg.Msg)
--- sessionView model props session =
---     let
---         room =
---             .room >> Rooms.ordinal
---         compareRooms p1 p2 =
---             compare (room p1) (room p2)
---         compareSlots p1 p2 =
---             case ( p1.quickieSlot, p2.quickieSlot ) of
---                 ( Nothing, Nothing ) ->
---                     EQ
---                 ( Nothing, _ ) ->
---                     LT
---                 ( _, Nothing ) ->
---                     GT
---                 ( Just s1, Just s2 ) ->
---                     compare (QuickieSlots.ordinal s1) (QuickieSlots.ordinal s2)
---         proposals =
---             List.filter (.session >> (==) session) props
---                 |> stableSortWith compareSlots
---                 |> stableSortWith compareRooms
---     in
---         case List.head proposals of
---             Nothing ->
---                 []
---             Just prop ->
---                 let
---                     s =
---                         Sessions.toString prop.session
---                     d =
---                         Days.toString prop.day
---                     label =
---                         d ++ ", " ++ s
---                     cards =
---                         List.map (proposalCard proposalCardGroup model) proposals
---                 in
---                     [ Chip.span [ Options.css "margin-bottom" "5px" ]
---                         [ Chip.content []
---                             [ text label ]
---                         ]
---                     , flowView cards
---                     ]
--- {-| Display all proposals for a particular day.
--- -}
--- dayView : Model.Model -> List Types.Proposal -> Days.Day -> List (Html Msg.Msg)
--- dayView model proposals day =
---     let
---         props =
---             List.filter (.day >> (==) day) proposals
---         sview =
---             sessionView model props
---                 >> Options.styled div
---                     [ Options.css "margin-bottom" "10px" ]
---     in
---         List.map
---             sview
---             Sessions.conferenceSessions
+
+
+sessionView : Model.Model -> List Types.Proposal -> Sessions.Session -> Html Msg.Msg
+sessionView model props session =
+    let
+        room =
+            .room >> Rooms.ordinal
+
+        compareRooms p1 p2 =
+            compare (room p1) (room p2)
+
+        compareSlots p1 p2 =
+            case ( p1.quickieSlot, p2.quickieSlot ) of
+                ( Nothing, Nothing ) ->
+                    EQ
+
+                ( Nothing, _ ) ->
+                    LT
+
+                ( _, Nothing ) ->
+                    GT
+
+                ( Just s1, Just s2 ) ->
+                    compare (QuickieSlots.ordinal s1) (QuickieSlots.ordinal s2)
+
+        proposals =
+            List.filter (.session >> (==) session) props
+                |> stableSortWith compareSlots
+                |> stableSortWith compareRooms
+    in
+        case List.head proposals of
+            Nothing ->
+                div [] []
+
+            Just prop ->
+                let
+                    s =
+                        Sessions.toString prop.session
+
+                    d =
+                        Days.toString prop.day
+
+                    label =
+                        d ++ ", " ++ s
+
+                    cards =
+                        List.map (proposalCard proposalCardGroup model) proposals
+                in
+                    Card.group cards
+
+
+{-| Display all proposals for a particular day.
+-}
+dayView : Model.Model -> List Types.Proposal -> Days.Day -> List (Html Msg.Msg)
+dayView model proposals day =
+    let
+        props =
+            List.filter (.day >> (==) day) proposals
+
+        sview =
+            sessionView model props
+
+        -- >> Options.styled div
+        --     [ Options.css "margin-bottom" "10px" ]
+    in
+        List.map
+            sview
+            Sessions.conferenceSessions
+
+
+
 -- {-| Display all "bookmarked" proposals, i.e. the users personal agenda.
 -- -}
 -- agendaView : Model.Model -> List (Html Msg.Msg)
@@ -262,8 +283,9 @@ view model =
     let
         main =
             case model.location of
-                --                 Routing.Day day ->
-                --                     dayView model model.proposals day
+                Routing.Day day ->
+                    dayView model model.proposals day
+
                 --                 Routing.Proposal id ->
                 --                     case findProposal model id of
                 --                         Just proposal ->
@@ -287,8 +309,9 @@ view model =
 
         pageName =
             case model.location of
-                --                 Routing.Day day ->
-                --                     Days.toString day
+                Routing.Day day ->
+                    Days.toString day
+
                 --                 Routing.Proposal id ->
                 --                     ""
                 --                 Routing.Presenter id ->
@@ -328,7 +351,6 @@ view model =
                                   , agendaLink
                                   , Navbar.dropdownDivider
                                   , Navbar.dropdownItem
-
                                         [-- Options.onClick <|
                                          --                                         Msg.Batch
                                          --                                             [ Msg.FetchData
