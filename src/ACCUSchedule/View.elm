@@ -14,28 +14,18 @@ import ACCUSchedule.Types.Days as Days
 import ACCUSchedule.Types.QuickieSlots as QuickieSlots
 import ACCUSchedule.Types.Rooms as Rooms
 import ACCUSchedule.Types.Sessions as Sessions
-
-
--- import ACCUSchedule.View.PresenterCard exposing (presenterCard)
-
+import ACCUSchedule.View.PresenterCard exposing (presenterCard)
 import ACCUSchedule.View.ProposalCard exposing (proposalCard)
 import ACCUSchedule.View.Theme as Theme
 import Bootstrap.Card as Card
 import Bootstrap.CDN as CDN
 import Bootstrap.Grid as Grid
+import Bootstrap.Grid.Col as Col
 import Bootstrap.Navbar as Navbar
 import Html exposing (a, br, div, h1, Html, img, p, text)
 import Html.Attributes exposing (height, href, src)
 import List.Extra exposing (stableSortWith)
-
-
--- import Markdown
-
-
-proposalCardGroup : Int
-proposalCardGroup =
-    0
-
+import Markdown
 
 
 -- presenterCardGroup : Int
@@ -50,13 +40,18 @@ proposalCardGroup =
 -- findProposal : Model.Model -> Types.ProposalId -> Maybe Types.Proposal
 -- findProposal model id =
 --     (List.filter (\p -> p.id == id) model.proposals) |> List.head
--- {-| Find a presenter based on a string representation of its id.
---    This is just convenience for parsing the route.
--- -}
--- findPresenter : Model.Model -> Types.PresenterId -> Maybe Types.Presenter
--- findPresenter model id =
---     (List.filter (\p -> p.id == id) model.presenters) |> List.head
---                 [ text <| Days.toString proposal.day ]
+
+
+{-| Find a presenter based on a string representation of its id.
+This is just convenience for parsing the route.
+-}
+findPresenter : Model.Model -> Types.PresenterId -> Maybe Types.Presenter
+findPresenter model id =
+    (List.filter (\p -> p.id == id) model.presenters) |> List.head
+
+
+
+--                [ text <| Days.toString proposal.day ]
 -- flowView : List (Html Msg.Msg) -> Html Msg.Msg
 -- flowView elems =
 --     Options.div
@@ -110,7 +105,7 @@ sessionView model props session =
                         d ++ ", " ++ s
 
                     cards =
-                        List.map (proposalCard proposalCardGroup model) proposals
+                        List.map (proposalCard model) proposals
                 in
                     Card.group cards
 
@@ -155,7 +150,7 @@ dayView model proposals day =
 --                     ]
 --                 ]
 --             , List.filter (.day >> (==) day) props
---                 |> List.map (proposalCard proposalCardGroup model)
+--                 |> List.map (proposalCard  model)
 --                 |> flowView
 --             ]
 --     in
@@ -182,7 +177,7 @@ dayView model proposals day =
 --             ]
 --             [ Options.styled p
 --                 []
---                 [ proposalCard proposalCardGroup model proposal ]
+--                 [ proposalCard  model proposal ]
 --             , Options.styled p
 --                 [ Typo.body1
 --                 , Options.css "width" "30em"
@@ -190,27 +185,27 @@ dayView model proposals day =
 --                 ]
 --                 [ Asciidoc.toHtml [] proposal.text ]
 --             ]
--- {-| Display a single presenter
--- -}
--- presenterView : Model.Model -> Types.Presenter -> Html Msg.Msg
--- presenterView model presenter =
---     Options.div
---         [ Options.css "display" "flex"
---         , Options.css "flex-flow" "row wrap"
---           -- , Options.css "justify" "center"
---         , Options.css "justify-content" "flex-start"
---         , Options.css "align-items" "flex-start"
---         ]
---         [ Options.styled p
---             []
---             [ presenterCard presenterCardGroup model presenter ]
---         , Options.styled p
---             [ Typo.body1
---             , Options.css "width" "30em"
---             , Options.css "margin-left" "10px"
---             ]
---             [ Markdown.toHtml [] presenter.bio ]
---         ]
+
+
+{-| Display a single presenter
+-}
+presenterView : Model.Model -> Types.Presenter -> Html Msg.Msg
+presenterView model presenter =
+    Grid.container
+        []
+        [ Grid.row
+            []
+            [ Grid.col
+                [ Col.xs4 ]
+                [ Card.view <| presenterCard model presenter ]
+            , Grid.col
+                [ Col.xs8 ]
+                [ Markdown.toHtml [] presenter.bio ]
+            ]
+        ]
+
+
+
 -- presentersView : Model.Model -> Html Msg.Msg
 -- presentersView model =
 --     model.presenters
@@ -220,7 +215,7 @@ dayView model proposals day =
 -- searchView : String -> Model.Model -> Html Msg.Msg
 -- searchView term model =
 --     Search.search term model
---         |> List.map (proposalCard proposalCardGroup model)
+--         |> List.map (proposalCard  model)
 --         |> flowView
 
 
@@ -292,12 +287,14 @@ view model =
                 --                             [ proposalView model proposal ]
                 --                         Nothing ->
                 --                             [ notFoundView ]
-                --                 Routing.Presenter id ->
-                --                     case findPresenter model id of
-                --                         Just presenter ->
-                --                             [ presenterView model presenter ]
-                --                         Nothing ->>
-                --                             [ notFoundView ]
+                Routing.Presenter id ->
+                    case findPresenter model id of
+                        Just presenter ->
+                            [ presenterView model presenter ]
+
+                        Nothing ->
+                            [ notFoundView ]
+
                 --                 Routing.Presenters ->
                 --                     [ presentersView model ]
                 --                 Routing.Agenda ->
@@ -312,16 +309,21 @@ view model =
                 Routing.Day day ->
                     Days.toString day
 
-                --                 Routing.Proposal id ->
-                --                     ""
-                --                 Routing.Presenter id ->
-                --                     ""
-                --                 Routing.Presenters ->
-                --                     "Presenters"
-                --                 Routing.Agenda ->
-                --                     "Your agenda"
-                --                 Routing.Search term ->
-                --                     ""
+                Routing.Proposal id ->
+                    ""
+
+                Routing.Presenter id ->
+                    ""
+
+                Routing.Presenters ->
+                    "Presenters"
+
+                Routing.Agenda ->
+                    "Your agenda"
+
+                Routing.Search term ->
+                    ""
+
                 _ ->
                     ""
 

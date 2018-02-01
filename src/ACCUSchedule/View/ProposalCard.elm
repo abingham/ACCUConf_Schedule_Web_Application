@@ -52,8 +52,8 @@ location, and potentially other information about a proposal, though not the
 full text of the abstract. This includes a clickable icon for "starring" a
 propposal.
 -}
-proposalCard : Int -> Model.Model -> Types.Proposal -> Card.Config Msg.Msg
-proposalCard controlGroup model proposal =
+proposalCard : Model.Model -> Types.Proposal -> Card.Config Msg.Msg
+proposalCard model proposal =
     let
         room =
             Rooms.toString proposal.room
