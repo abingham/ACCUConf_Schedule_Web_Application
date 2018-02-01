@@ -11,9 +11,10 @@ module ACCUSchedule.Model
 {-| The overal application model.
 -}
 
+import ACCUSchedule.Msg as Msg
 import ACCUSchedule.Routing as Routing
 import ACCUSchedule.Types as Types
-import Material
+import Bootstrap.Navbar as Navbar
 import Navigation
 
 
@@ -28,9 +29,9 @@ type alias Model =
     , presenters : List Types.Presenter
     , apiBaseUrl : String
     , bookmarks : List Types.ProposalId
-    , mdl : Material.Model
     , location : Routing.RoutePath
     , view : ViewModel
+    , navbarState : Navbar.State
     }
 
 
@@ -76,13 +77,18 @@ raisePresenter raised id model =
         { model | view = { view | raisedPresenter = val } }
 
 
-initialModel : String -> List Types.ProposalId -> Navigation.Location -> Model
+initialModel : String -> List Types.ProposalId -> Navigation.Location -> (Model, Cmd Msg.Msg)
 initialModel apiBaseUrl bookmarks location =
-    { proposals = []
-    , presenters = []
-    , apiBaseUrl = apiBaseUrl
-    , bookmarks = bookmarks
-    , mdl = Material.model
-    , location = Routing.parseLocation location
-    , view = { raisedProposal = Nothing, raisedPresenter = Nothing }
-    }
+    let
+        ( navbarState, navbarCmd ) =
+            Navbar.initialState Msg.NavbarMsg
+    in
+        ({ proposals = []
+         , presenters = []
+         , apiBaseUrl = apiBaseUrl
+         , bookmarks = bookmarks
+         , location = Routing.parseLocation location
+         , view = { raisedProposal = Nothing, raisedPresenter = Nothing }
+         , navbarState = navbarState
+         }
+        , navbarCmd)

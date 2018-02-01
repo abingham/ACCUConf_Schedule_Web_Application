@@ -5,8 +5,8 @@ import ACCUSchedule.Msg as Msg
 import ACCUSchedule.Model exposing (Model, raisePresenter, raiseProposal)
 import ACCUSchedule.Routing as Routing
 import ACCUSchedule.Storage as Storage
+import Bootstrap.Navbar as Navbar
 import Dispatch
-import Material
 import Navigation
 import Return exposing (command, map, singleton)
 
@@ -67,5 +67,5 @@ update msg model =
         Msg.UrlChange location ->
             { model | location = Routing.parseLocation location } ! []
 
-        Msg.Mdl mdlMsg ->
-            Material.update Msg.Mdl mdlMsg model
+        Msg.NavbarMsg state ->
+            ( { model | navbarState = state }, Cmd.none )

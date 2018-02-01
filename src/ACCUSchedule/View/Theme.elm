@@ -1,13 +1,7 @@
 module ACCUSchedule.View.Theme exposing (..)
 
-import Material.Color as Color
+import Color
 
+background = Color.rgb 200 200 200
 
-background : Color.Color
-background =
-    Color.color Color.Grey Color.S200
-
-
-accent : Color.Color
-accent =
-    Color.accent
+accent = "accent"

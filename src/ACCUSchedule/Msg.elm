@@ -1,8 +1,8 @@
 module ACCUSchedule.Msg exposing (..)
 
 import ACCUSchedule.Types as Types
+import Bootstrap.Navbar as Navbar
 import Http
-import Material
 import Navigation
 
 
@@ -17,5 +17,5 @@ type Msg
     | RaiseProposal Bool Types.ProposalId
     | RaisePresenter Bool Types.PresenterId
     | Batch (List Msg)
-    | Mdl (Material.Msg Msg)
     | UrlChange Navigation.Location
+    | NavbarMsg Navbar.State

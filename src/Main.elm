@@ -6,8 +6,9 @@ import ACCUSchedule.Msg exposing (..)
 import ACCUSchedule.Types exposing (ProposalId)
 import ACCUSchedule.Update exposing (update)
 import ACCUSchedule.View exposing (view)
-import Material
+import Bootstrap.Navbar as Navbar
 import Navigation
+import Platform.Sub exposing (none)
 
 
 type alias Flags =
@@ -22,17 +23,17 @@ main =
         { init =
             \flags loc ->
                 let
-                    model =
+                    (model, cmd) =
                         initialModel flags.apiBaseUrl flags.bookmarks loc
                 in
                     ( model
                     , Cmd.batch
-                        [ Material.init Mdl
-                        , Comms.fetchProposals model
+                        [ Comms.fetchProposals model
                         , Comms.fetchPresenters model
+                        , cmd
                         ]
                     )
         , view = view
         , update = update
-        , subscriptions = Material.subscriptions Mdl
+        , subscriptions = \model -> Navbar.subscriptions model.navbarState ACCUSchedule.Msg.NavbarMsg
         }
