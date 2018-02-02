@@ -10,9 +10,10 @@ schedule.
 The structure of this project is largely derived from the
 excellent [Elm Tutorial](https://www.elm-tutorial.org/).
 
-To build and run the app, make sure
-you've
-[installed a recent version of node.js (>= 6.0.0)](https://docs.npmjs.com/getting-started/installing-node).
+To build and run the app, make sure you've installed:
+
+- a recent version of node.js (>= 6.0.0)](https://docs.npmjs.com/getting-started/installing-node).
+- [Elm 0.18.x](https://guide.elm-lang.org/install.html)
 
 ## Configuring the environment
 
