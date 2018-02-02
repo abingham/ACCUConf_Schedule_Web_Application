@@ -43,6 +43,8 @@ findPresenter model id =
     (List.filter (\p -> p.id == id) model.presenters) |> List.head
 
 
+{-| Create view of all proposals for a particular session.
+-}
 sessionView : Model.Model -> List Types.Proposal -> Sessions.Session -> Html Msg.Msg
 sessionView model props session =
     let
@@ -102,9 +104,6 @@ dayView model proposals day =
 
         sview =
             sessionView model props
-
-        -- >> Options.styled div
-        --     [ Options.css "margin-bottom" "10px" ]
     in
         div [] <|
             List.map
@@ -184,7 +183,7 @@ presentersView model =
     model.presenters
         |> List.sortBy .lastName
         |> List.map (presenterCard model)
-        |> Card.group
+        |> Card.deck
 
 
 searchView : String -> Model.Model -> Html Msg.Msg
@@ -347,9 +346,9 @@ view model =
                 _ ->
                     ""
     in
-        Grid.container []
+        Grid.containerFluid []
             [ CDN.stylesheet
             , header model
-            , div [class "main-body"] [main]
+            , div [ class "main-body" ] [ main ]
             , footer model
             ]
