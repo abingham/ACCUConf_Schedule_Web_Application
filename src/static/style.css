@@ -5,3 +5,7 @@
 .main-body {
     margin-top: 80px;
 }
+
+.dropdown-toggle::after {
+    display: none !important;
+}

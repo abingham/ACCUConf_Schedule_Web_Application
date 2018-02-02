@@ -20,6 +20,7 @@ import Bootstrap.Form.Input as Input
 import Bootstrap.Grid as Grid
 import Bootstrap.Grid.Col as Col
 import Bootstrap.Navbar as Navbar
+import FeatherIcons
 import Html exposing (a, br, div, h1, Html, img, p, text)
 import Html.Attributes exposing (class, height, href, src)
 import List.Extra exposing (stableSortWith)
@@ -88,7 +89,7 @@ sessionView model props session =
                     cards =
                         List.map (proposalCard model) proposals
                 in
-                    Card.group cards
+                    Card.deck cards
 
 
 {-| Display all proposals for a particular day.
@@ -248,8 +249,8 @@ header model =
             |> Navbar.brand [ href "#" ] [ img [ src "./static/img/accu-logo.png", height 50 ] [] ]
             |> Navbar.items
                 [ Navbar.dropdown
-                    { id = "drawer id"
-                    , toggle = Navbar.dropdownToggle [] [ text "hola!" ]
+                    { id = "header-nav-dropdown"
+                    , toggle = Navbar.dropdownToggle [] [ FeatherIcons.menu |> FeatherIcons.toHtml [] ]
                     , items =
                         List.concat
                             [ List.map dayLink Days.conferenceDays
