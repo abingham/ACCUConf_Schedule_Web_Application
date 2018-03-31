@@ -12,7 +12,7 @@ require('asciidoctor.js');
 var Elm = require('./Main.elm');
 var mountNode = document.getElementById('main');
 
-var bookmarksItem = 'accu2017_bookmarks';
+var bookmarksItem = 'accu2018_bookmarks';
 
 var bookmarks = localStorage.getItem(bookmarksItem);
 if (bookmarks) {
