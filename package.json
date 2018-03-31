@@ -1,7 +1,7 @@
 {
-  "name": "accu-2017-elm-app",
+  "name": "accu-schedule-app",
   "version": "1.0.0",
-  "description": "An Elm-based web app for the ACCU 2017 schedule",
+  "description": "An Elm-based web app for the ACCU conference schedule",
   "main": "index.js",
   "scripts": {
     "test-api": "node tests/api-server/api.js",
@@ -10,9 +10,9 @@
     "watch": "webpack --watch",
     "dev": "webpack-dev-server --port 3000"
   },
-  "repository" : {
-    "type" : "git",
-    "url" : "https://github.com/abingham/accu-2017-elm-app"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ACCUConf/ACCUConf_Schedule_Web_Application.git"
   },
   "author": "Sixty North AS",
   "license": "MIT",
@@ -22,6 +22,7 @@
     "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.26.1",
     "dotenv": "^4.0.0",
+    "elm": "^0.18.0",
     "elm-webpack-loader": "^4.1.1",
     "file-loader": "^0.9.0",
     "font-awesome": "^4.7.0",
