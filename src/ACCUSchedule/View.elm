@@ -272,13 +272,13 @@ footer =
     Footer.mini []
         { left =
             Footer.left []
-                [ Footer.logo [] [ Footer.html <| text "ACCU 2017 Schedule" ]
+                [ Footer.logo [] [ Footer.html <| text "ACCU 2018 Schedule" ]
                 , Footer.links []
                     [ Footer.linkItem
-                        [ Footer.href "https://conference.accu.org/site" ]
+                        [ Footer.href "https://conference.accu.org/" ]
                         [ Footer.html <| text "Conference" ]
                     , Footer.linkItem
-                        [ Footer.href "https://github.com/abingham/accu-2017-elm-app" ]
+                        [ Footer.href "https://github.com/ACCUConf/ACCUConf_Schedule_Web_Application" ]
                         [ Footer.html <| img [ src "./static/img/GitHub-Mark-Light-32px.png" ] [] ]
                     ]
                 ]
@@ -398,7 +398,7 @@ view model =
                         ]
                     ]
                 , drawer =
-                    [ Layout.title [] [ text "ACCU 2017" ]
+                    [ Layout.title [] [ text "ACCU 2018" ]
                     , Layout.navigation [] <|
                         List.concat
                             [ List.map
