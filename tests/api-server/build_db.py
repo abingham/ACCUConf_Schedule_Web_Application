@@ -18,10 +18,8 @@ def make_presenter(id):
     return {
         'bio': 'BIO{}'.format(id),
         'country': 'IRL',
-        'first_name': 'FNAME{}'.format(id),
-        'last_name': 'LNAME{}'.format(id),
+        'name': 'NAME{}'.format(id),
         'id': id,
-        'state': 'IE-M'
     }
 
 
@@ -32,7 +30,7 @@ def make_proposal(id, day, room, session, pid):
         'presenters': [pid],
         'room': room,
         'session': session,
-        'text': 'proposal {} abstract'.format(id),
+        'summary': 'proposal {} summary'.format(id),
         'title': 'proposal {}'.format(id)
     }
 
@@ -43,14 +41,14 @@ slots = ((day, room, session)
          for room in ROOMS
          for session in SESSIONS)
 assignments = zip(slots, cycle(range(NUM_PRESENTERS)))
-proposals = [make_proposal(id, day, room, session, pid)
+sessions = [make_proposal(id, day, room, session, pid)
              for (id, ((day, room, session), pid))
              in enumerate(assignments)]
 
 
 conference = {
     'presenters': presenters,
-    'scheduled_proposals': proposals
+    'sessions': sessions
 }
 
 print(json.dumps(conference))
