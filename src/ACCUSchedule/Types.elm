@@ -21,21 +21,16 @@ type alias ProposalId =
 
 type alias Presenter =
     { id : PresenterId
-    , firstName : String
-    , lastName : String
+    , name : String
     , bio : String
     , country : String
-    , state : String
     }
 
-fullName : Presenter -> String
-fullName p =
-    p.firstName ++ " " ++ p.lastName
 
 type alias Proposal =
     { id : ProposalId
     , title : String
-    , text : String
+    , summary : String
     , presenters : List PresenterId
     , day : Day
     , session : Session

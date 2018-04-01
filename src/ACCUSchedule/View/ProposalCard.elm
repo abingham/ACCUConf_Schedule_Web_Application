@@ -98,7 +98,7 @@ proposalCard controlGroup model proposal =
         presenterLink presenter =
             Layout.link
                 [ Layout.href (Routing.presenterUrl presenter.id) ]
-                [ text <| presenter.firstName ++ " " ++ presenter.lastName ]
+                [ text presenter.name ]
 
         presenterLinks =
             List.map presenterLink (Model.presenters model proposal)
@@ -121,7 +121,7 @@ proposalCard controlGroup model proposal =
                 [ Button.ripple
                 , Button.link <| Routing.presenterUrl presenter.id
                 ]
-                [ text <| Types.fullName presenter ]
+                [ text  presenter.name ]
     in
         Card.view
             [ case model.view.raisedProposal of

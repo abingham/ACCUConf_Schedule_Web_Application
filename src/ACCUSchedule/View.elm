@@ -199,7 +199,7 @@ proposalView model proposal =
                 , Options.css "width" "30em"
                 , Options.css "margin-left" "10px"
                 ]
-                [ Asciidoc.toHtml [] proposal.text ]
+                [ Asciidoc.toHtml [] proposal.summary ]
             ]
 
 
@@ -229,7 +229,7 @@ presenterView model presenter =
 presentersView : Model.Model -> Html Msg.Msg
 presentersView model =
     model.presenters
-        |> List.sortBy .lastName
+        |> List.sortBy .name
         |> List.map (presenterCard presenterCardGroup model)
         |> flowView
 

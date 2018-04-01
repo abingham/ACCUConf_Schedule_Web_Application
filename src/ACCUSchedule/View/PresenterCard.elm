@@ -90,7 +90,7 @@ presenterCard controlGroup model presenter =
                 [ Card.head
                     [ Options.onClick <| Msg.VisitPresenter presenter
                     ]
-                    [ text <| Types.fullName presenter ]
+                    [ text presenter.name ]
                 , Card.subhead [] [ text country ]
                 ]
             , Card.text

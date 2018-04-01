@@ -13,8 +13,7 @@ presentersMatch : String -> Model -> Proposal -> Bool
 presentersMatch term model proposal =
     let
         pmatch p =
-            lcontains term p.firstName
-                || lcontains term p.lastName
+            lcontains term p.name
     in
         List.any pmatch (presenters model proposal)
 
@@ -23,7 +22,7 @@ search : String -> Model -> List Proposal
 search term model =
     let
         matches p =
-            lcontains term p.text
+            lcontains term p.summary
                 || lcontains term p.title
                 || presentersMatch term model p
     in

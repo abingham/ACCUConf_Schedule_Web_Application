@@ -148,11 +148,9 @@ presenterDecoder : Decoder Types.Presenter
 presenterDecoder =
     decode Types.Presenter
         |> required "id" int
-        |> required "first_name" string
-        |> required "last_name" string
+        |> required "name" string
         |> required "bio" string
         |> required "country" string
-        |> required "state" string
 
 
 {-| Decode a list of Presenters, taking care to dispose of invalid presenters that
@@ -168,7 +166,7 @@ proposalDecoder =
     decode Types.Proposal
         |> required "id" int
         |> required "title" string
-        |> required "text" string
+        |> required "summary" string
         |> required "presenters" (list int)
         |> required "day" day
         |> required "session" session

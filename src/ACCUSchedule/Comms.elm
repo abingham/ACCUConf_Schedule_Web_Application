@@ -16,7 +16,7 @@ fetchProposals : Model -> Cmd Msg.Msg
 fetchProposals model =
     let
         url =
-            model.apiBaseUrl ++ "/proposals/api/scheduled_proposals"
+            model.apiBaseUrl ++ "/sessions"
         request =
             Http.get url Json.proposalsDecoder
     in
@@ -26,7 +26,7 @@ fetchPresenters : Model -> Cmd Msg.Msg
 fetchPresenters model =
     let
         url =
-            model.apiBaseUrl ++ "/proposals/api/presenters"
+            model.apiBaseUrl ++ "/presenters"
 
         request =
             Http.get url Json.presentersDecoder
