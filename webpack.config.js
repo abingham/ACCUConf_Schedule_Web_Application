@@ -1,9 +1,12 @@
-var CopyWebpackPlugin = require( 'copy-webpack-plugin' );
+var CopyPlugin = require( 'copy-webpack-plugin' );
 require('dotenv').config();
 var path = require("path");
 var webpack = require("webpack");
 
 module.exports = {
+  // TODO: Can we set this in .env or something?
+  mode: 'development',
+
   entry: {
     app: [
       './src/index.js'
@@ -16,36 +19,42 @@ module.exports = {
   },
 
   module: {
-    loaders: [
+    rules:[
       {
         test: /\.(css|scss)$/,
-        loaders: [
+        use: [
           'style-loader',
           'css-loader',
         ]
       },
       {
         test:    /\.html$/,
-        exclude: /node_modules/,
-        loader:  'file?name=[name].[ext]'
+        // exclude: /node_modules/,
+        use: {
+            loader: 'html-loader',
+            options: {}
+          }
       },
       {
         test:    /\.elm$/,
         exclude: [/elm-stuff/, /node_modules/],
-        loader:  'elm-webpack?verbose=true&warn=true'
+        use: {
+          loader: 'elm-webpack-loader',
+          options: {}
+        }
       },
-      {
-        test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        loader: 'url-loader?limit=10000&mimetype=application/font-woff'
-      },
-      {
-        test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        loader: 'file-loader'
-      },
+      // {
+      //   test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+      //   use: 'url-loader?limit=10000&mimetype=application/font-woff'
+      // },
+      // {
+      //   test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+      //   use: 'file-loader'
+      // },
     ]
   },
   plugins: [
-      new CopyWebpackPlugin([
+      new CopyPlugin([
           {
               from: 'src/static/img/',
               to:   'static/img/'
