@@ -20,7 +20,7 @@ var flags = {
 };
 
 setTimeout(function() {
-    var app = Elm.Main.init(flags);
+    var app = Elm.ACCUSchedule.init({flags: flags});
 
     // handle "store" port to save bookmarks proposals
     app.ports.store.subscribe(bookmarks => {
