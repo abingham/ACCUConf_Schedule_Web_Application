@@ -1,10 +1,8 @@
 'use strict';
 
-// Require index.html so it gets copied to dist
 // require('asciidoctor.js');
 
-var Elm = require('./Main.elm');
-var mountNode = document.getElementById('main');
+const {Elm} = require('./Main');
 
 var bookmarksItem = 'accu2018_bookmarks';
 
@@ -22,10 +20,10 @@ var flags = {
 };
 
 setTimeout(function() {
-    var app = Elm.ACCUSchedule.embed(mountNode, flags);
+    var app = Elm.Main.init(flags);
 
     // handle "store" port to save bookmarks proposals
-    app.ports.store.subscribe(function(bookmarks) {
+    app.ports.store.subscribe(bookmarks => {
         localStorage.setItem(bookmarksItem, JSON.stringify(bookmarks));
-    });
+    })
 });
