@@ -1,9 +1,9 @@
 module ACCUSchedule.Msg exposing (..)
 
 import ACCUSchedule.Types as Types
+import Browser
 import Http
-import Material
-import Navigation
+import Url
 
 
 type Msg
@@ -17,5 +17,5 @@ type Msg
     | RaiseProposal Bool Types.ProposalId
     | RaisePresenter Bool Types.PresenterId
     | Batch (List Msg)
-    | Mdl (Material.Msg Msg)
-    | UrlChange Navigation.Location
+    | LinkClicked Browser.UrlRequest
+    | UrlChange Url.Url

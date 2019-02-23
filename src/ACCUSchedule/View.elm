@@ -17,14 +17,6 @@ import Html exposing (a, br, div, h1, Html, img, p, text)
 import Html.Attributes exposing (height, href, src)
 import List.Extra exposing (stableSortWith)
 import Markdown
-import Material.Chip as Chip
-import Material.Color as Color
-import Material.Elevation as Elevation
-import Material.Footer as Footer
-import Material.Layout as Layout
-import Material.Options as Options
-import Material.Textfield as Textfield
-import Material.Typography as Typo
 
 
 proposalCardGroup : Int

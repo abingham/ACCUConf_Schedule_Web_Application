@@ -13,8 +13,8 @@ module ACCUSchedule.Model
 
 import ACCUSchedule.Routing as Routing
 import ACCUSchedule.Types as Types
-import Material
-import Navigation
+import Browser.Navigation as Nav
+import Url
 
 
 type alias ViewModel =
@@ -28,7 +28,8 @@ type alias Model =
     , presenters : List Types.Presenter
     , apiBaseUrl : String
     , bookmarks : List Types.ProposalId
-    , mdl : Material.Model
+    , url: Url.Url
+    , key: Nav.Key
     , location : Routing.RoutePath
     , view : ViewModel
     }
@@ -76,13 +77,14 @@ raisePresenter raised id model =
         { model | view = { view | raisedPresenter = val } }
 
 
-initialModel : String -> List Types.ProposalId -> Navigation.Location -> Model
-initialModel apiBaseUrl bookmarks location =
+initialModel : String -> List Types.ProposalId -> Nav.Key -> Url.Url -> Model
+initialModel apiBaseUrl bookmarks key url =
     { proposals = []
     , presenters = []
     , apiBaseUrl = apiBaseUrl
     , bookmarks = bookmarks
-    , mdl = Material.model
-    , location = Routing.parseLocation location
+    , url = url
+    , key = key
+    , location = Routing.parseLocation url 
     , view = { raisedProposal = Nothing, raisedPresenter = Nothing }
     }

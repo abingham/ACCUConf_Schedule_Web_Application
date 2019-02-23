@@ -6,8 +6,7 @@ import ACCUSchedule.Msg exposing (..)
 import ACCUSchedule.Types exposing (ProposalId)
 import ACCUSchedule.Update exposing (update)
 import ACCUSchedule.View exposing (view)
-import Material
-import Navigation
+import Browser
 
 
 type alias Flags =
@@ -18,21 +17,22 @@ type alias Flags =
 
 main : Program Flags Model Msg
 main =
-    Navigation.programWithFlags UrlChange
-        { init =
-            \flags loc ->
+    Browser.application
+    { init =
+            \flags url key ->
                 let
                     model =
-                        initialModel flags.apiBaseUrl flags.bookmarks loc
+                        initialModel flags.apiBaseUrl flags.bookmarks key url 
                 in
                     ( model
                     , Cmd.batch
-                        [ Material.init Mdl
-                        , Comms.fetchProposals model
+                        [ Comms.fetchProposals model
                         , Comms.fetchPresenters model
                         ]
                     )
-        , view = view
-        , update = update
-        , subscriptions = Material.subscriptions Mdl
-        }
+    , view = view
+    , update = update
+    , subscriptions = \_ = Sub.none
+    , onUrlChange = UrlChanged
+    , onUrlRequest = LinkClicked
+    }

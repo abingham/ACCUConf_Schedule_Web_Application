@@ -1,13 +1,13 @@
 module ACCUSchedule.Update exposing (update)
 
 import ACCUSchedule.Comms as Comms
-import ACCUSchedule.Msg as Msg
 import ACCUSchedule.Model exposing (Model, raisePresenter, raiseProposal)
+import ACCUSchedule.Msg as Msg
 import ACCUSchedule.Routing as Routing
 import ACCUSchedule.Storage as Storage
+import Browser.Navigation as Nav
 import Dispatch
 import Material
-import Navigation
 import Return exposing (command, map, singleton)
 
 
@@ -48,10 +48,11 @@ update msg model =
                 bookmarks =
                     if List.member id model.bookmarks then
                         List.filter (\pid -> pid /= id) model.bookmarks
+
                     else
                         id :: model.bookmarks
             in
-                { model | bookmarks = bookmarks } ! [ Storage.store bookmarks ]
+            { model | bookmarks = bookmarks } ! [ Storage.store bookmarks ]
 
         Msg.RaiseProposal raised id ->
             singleton model
@@ -64,8 +65,13 @@ update msg model =
         Msg.Batch msgs ->
             model ! [ Dispatch.forward msgs ]
 
-        Msg.UrlChange location ->
-            { model | location = Routing.parseLocation location } ! []
+        Msg.LinkClicked urlRequest ->
+            case urlRequest of
+                Browser.Internal url ->
+                    ( model, Nav.pushUrl model.key (Url.toString url) )
 
-        Msg.Mdl mdlMsg ->
-            Material.update Msg.Mdl mdlMsg model
+                Browser.External href ->
+                    ( model, Nav.load href )
+
+        Msg.UrlChange location ->
+            { model | url = url } ! []
