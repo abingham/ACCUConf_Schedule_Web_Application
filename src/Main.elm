@@ -32,7 +32,7 @@ main =
                     )
     , view = view
     , update = update
-    , subscriptions = \_ = Sub.none
-    , onUrlChange = UrlChanged
+    , subscriptions = \_ -> Sub.none
+    , onUrlChange = UrlChange
     , onUrlRequest = LinkClicked
     }

@@ -1,10 +1,13 @@
-module ACCUSchedule.View.Theme exposing (accent, background)
+module ACCUSchedule.View.Theme exposing (..)
 
-background : Color.Color
-background =
-    Color.grey
+foo : Int
+foo = 42
+
+-- background : Color
+-- background =
+--     Color.grey
 
 
-accent : Color.Color
-accent =
-    Color.orange
+-- accent : Color
+-- accent =
+--     Color.orange

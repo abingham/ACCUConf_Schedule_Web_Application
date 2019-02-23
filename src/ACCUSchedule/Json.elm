@@ -6,7 +6,7 @@ import ACCUSchedule.Types.QuickieSlots as QuickieSlots
 import ACCUSchedule.Types.Rooms as Rooms
 import ACCUSchedule.Types.Sessions as Sessions
 import Json.Decode exposing (andThen, Decoder, fail, int, list, maybe, string, succeed)
-import Json.Decode.Pipeline exposing (decode, hardcoded, optional, required)
+import Json.Decode.Pipeline exposing (hardcoded, optional, required)
 import List
 
 
@@ -146,7 +146,7 @@ listDecoder dec =
 
 presenterDecoder : Decoder Types.Presenter
 presenterDecoder =
-    decode Types.Presenter
+    Json.Decode.succeed Types.Presenter
         |> required "id" int
         |> required "name" string
         |> required "bio" string
@@ -163,7 +163,7 @@ presentersDecoder =
 
 proposalDecoder : Decoder Types.Proposal
 proposalDecoder =
-    decode Types.Proposal
+    Json.Decode.succeed Types.Proposal
         |> required "id" int
         |> required "title" string
         |> required "summary" string

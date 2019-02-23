@@ -5,10 +5,11 @@ import ACCUSchedule.Model exposing (Model, raisePresenter, raiseProposal)
 import ACCUSchedule.Msg as Msg
 import ACCUSchedule.Routing as Routing
 import ACCUSchedule.Storage as Storage
+import Browser
 import Browser.Navigation as Nav
-import Dispatch
-import Material
+-- import Dispatch
 import Return exposing (command, map, singleton)
+import Url
 
 
 update : Msg.Msg -> Model -> ( Model, Cmd Msg.Msg )
@@ -20,28 +21,19 @@ update msg model =
                 |> command (Comms.fetchPresenters model)
 
         Msg.ProposalsResult (Ok proposals) ->
-            { model | proposals = proposals } ! []
+            ({ model | proposals = proposals }, Cmd.none)
 
-        Msg.ProposalsResult (Err msg) ->
+        Msg.ProposalsResult (Err errMsg) ->
             -- TODO: display error message or something...maybe a button for
             -- re-fetching the proposals.
-            model ! []
+            (model, Cmd.none)
 
         Msg.PresentersResult (Ok presenters) ->
-            { model | presenters = presenters } ! []
+            ({ model | presenters = presenters }, Cmd.none)
 
-        Msg.PresentersResult (Err msg) ->
+        Msg.PresentersResult (Err errMsg) ->
             -- TODO: display error message or something...
-            model ! []
-
-        Msg.VisitProposal proposal ->
-            ( model, Navigation.newUrl (Routing.proposalUrl proposal.id) )
-
-        Msg.VisitPresenter presenter ->
-            ( model, Navigation.newUrl (Routing.presenterUrl presenter.id) )
-
-        Msg.VisitSearch term ->
-            ( model, Navigation.modifyUrl (Routing.searchUrl term) )
+            (model, Cmd.none)
 
         Msg.ToggleBookmark id ->
             let
@@ -52,7 +44,7 @@ update msg model =
                     else
                         id :: model.bookmarks
             in
-            { model | bookmarks = bookmarks } ! [ Storage.store bookmarks ]
+            ({ model | bookmarks = bookmarks }, Storage.store bookmarks)
 
         Msg.RaiseProposal raised id ->
             singleton model
@@ -63,7 +55,7 @@ update msg model =
                 |> map (raisePresenter raised id)
 
         Msg.Batch msgs ->
-            model ! [ Dispatch.forward msgs ]
+            (model, Cmd.none) -- TODO [ Dispatch.forward msgs ]
 
         Msg.LinkClicked urlRequest ->
             case urlRequest of
@@ -73,5 +65,5 @@ update msg model =
                 Browser.External href ->
                     ( model, Nav.load href )
 
-        Msg.UrlChange location ->
-            { model | url = url } ! []
+        Msg.UrlChange url ->
+            ({ model | url = url }, Cmd.none)

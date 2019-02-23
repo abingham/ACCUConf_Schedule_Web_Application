@@ -14,21 +14,14 @@ import Http
 
 fetchProposals : Model -> Cmd Msg.Msg
 fetchProposals model =
-    let
-        url =
-            model.apiBaseUrl ++ "/sessions"
-        request =
-            Http.get url Json.proposalsDecoder
-    in
-        Http.send Msg.ProposalsResult request
+    Http.get {
+        url = model.apiBaseUrl ++ "/sessions",
+        expect = Http.expectJson Msg.ProposalsResult Json.proposalsDecoder
+    }
 
 fetchPresenters : Model -> Cmd Msg.Msg
 fetchPresenters model =
-    let
-        url =
-            model.apiBaseUrl ++ "/presenters"
-
-        request =
-            Http.get url Json.presentersDecoder
-    in
-        Http.send Msg.PresentersResult request
+    Http.get {
+        url = model.apiBaseUrl ++ "/presenters",
+        expect = Http.expectJson Msg.PresentersResult Json.presentersDecoder
+    }
