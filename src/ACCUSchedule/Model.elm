@@ -1,12 +1,11 @@
-module ACCUSchedule.Model
-    exposing
-        ( initialModel
-        , Model
-        , presenters
-        , proposals
-        , raiseProposal
-        , raisePresenter
-        )
+module ACCUSchedule.Model exposing
+    ( Model
+    , initialModel
+    , presenters
+    , proposals
+    , raisePresenter
+    , raiseProposal
+    )
 
 {-| The overal application model.
 -}
@@ -19,6 +18,7 @@ import Url
 type alias ViewModel =
     { raisedProposal : Maybe Types.ProposalId
     , raisedPresenter : Maybe Types.PresenterId
+    , windowSize : { width : Int, height : Int }
     }
 
 
@@ -27,8 +27,8 @@ type alias Model =
     , presenters : List Types.Presenter
     , apiBaseUrl : String
     , bookmarks : List Types.ProposalId
-    , url: Url.Url
-    , key: Nav.Key
+    , url : Url.Url
+    , key : Nav.Key
     , view : ViewModel
     }
 
@@ -51,13 +51,14 @@ raiseProposal raised id model =
         val =
             if raised then
                 Just id
+
             else
                 Nothing
 
         view =
             model.view
     in
-        { model | view = { view | raisedProposal = val } }
+    { model | view = { view | raisedProposal = val } }
 
 
 raisePresenter : Bool -> Types.PresenterId -> Model -> Model
@@ -66,22 +67,27 @@ raisePresenter raised id model =
         val =
             if raised then
                 Just id
+
             else
                 Nothing
 
         view =
             model.view
     in
-        { model | view = { view | raisedPresenter = val } }
+    { model | view = { view | raisedPresenter = val } }
 
 
-initialModel : String -> List Types.ProposalId -> Nav.Key -> Url.Url -> Model
-initialModel apiBaseUrl bookmarks key url =
+initialModel : String -> List Types.ProposalId -> Nav.Key -> Url.Url -> Int -> Int -> Model
+initialModel apiBaseUrl bookmarks key url width height =
     { proposals = []
     , presenters = []
     , apiBaseUrl = apiBaseUrl
     , bookmarks = bookmarks
     , url = url
     , key = key
-    , view = { raisedProposal = Nothing, raisedPresenter = Nothing }
-    }
+    , view = { raisedProposal = Nothing
+             , raisedPresenter = Nothing
+             , windowSize = { width = width
+                       , height = height
+                        }
+                        }}

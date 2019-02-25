@@ -66,3 +66,11 @@ update msg model =
 
         Msg.UrlChange url ->
             ({ model | url = url }, Cmd.none)
+
+        Msg.WindowResized size ->
+            let 
+                view = model.view
+                new_view = {view | windowSize = size}
+            in
+            ({model | view = new_view}, Cmd.none)
+

@@ -1,7 +1,8 @@
-module ACCUSchedule.Msg exposing (..)
+module ACCUSchedule.Msg exposing (Msg(..))
 
 import ACCUSchedule.Types as Types
 import Browser
+import Element
 import Http
 import Url
 
@@ -16,3 +17,4 @@ type Msg
     | Batch (List Msg)
     | LinkClicked Browser.UrlRequest
     | UrlChange Url.Url
+    | WindowResized {width: Int, height: Int}
