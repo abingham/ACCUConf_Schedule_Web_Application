@@ -13,12 +13,17 @@ import ACCUSchedule.Types.Days as Days
 import ACCUSchedule.Types.QuickieSlots as QuickieSlots
 import ACCUSchedule.Types.Rooms as Rooms
 import ACCUSchedule.Types.Sessions as Sessions
-import ACCUSchedule.View.Theme as Theme
 import ACCUSchedule.View.PresenterCard exposing (presenterCard)
 import ACCUSchedule.View.ProposalCard exposing (proposalCard)
+import ACCUSchedule.View.Theme as Theme
 import Browser
-import Element exposing (Element, alignRight, centerY, column, el, fill, height, image, padding, rgb255, row, shrink, spacing, text, width, text)
+import Element exposing (Element, alignRight, centerY, column, el, fill, height, image, link, padding, px, rgb255, row, shrink, spacing, text, width)
 import Element.Background
+import Element.Font exposing (light, underline)
+import List exposing (append)
+
+
+
 -- import Html exposing (Html, a, br, div, h1, img, p)
 -- import Html.Attributes exposing (height, href, src)
 
@@ -259,40 +264,45 @@ body =
     row [ height fill ] [ text "body" ]
 
 
+footerLink : List (Element.Attribute Msg.Msg) -> { url : String, label : Element.Element Msg.Msg } -> Element.Element Msg.Msg
+footerLink =
+    append [ light ] >> link
+
+
 footer : Element Msg.Msg
 footer =
-    row [ height shrink ] [ text "footer" ]
-
-
-
--- Footer.mini []
---     { left =
---         Footer.left []
---             [ Footer.logo [] [ Footer.html <| text "ACCU 2018 Schedule" ]
---             , Footer.links []
---                 [ Footer.linkItem
---                     [ Footer.href "https://conference.accu.org/" ]
---                     [ Footer.html <| text "Conference" ]
---                 , Footer.linkItem
---                     [ Footer.href "https://github.com/ACCUConf/ACCUConf_Schedule_Web_Application" ]
---                     [ Footer.html <| img [ src "./static/img/GitHub-Mark-Light-32px.png" ] [] ]
---                 ]
---             ]
---     , right =
---         Footer.right []
---             [ Footer.links []
---                 [ Footer.linkItem
---                     [ Footer.href "https://sixty-north.com" ]
---                     [ Footer.html <| text "© 2017 Sixty North AS "
---                     , Footer.html <|
---                         Options.img
---                             [ Options.css "height" "20px" ]
---                             [ src "static/img/sixty-north-logo.png" ]
---                     ]
---                 ]
---             ]
---     }
-
+    row
+        [ height shrink
+        , Element.Background.color Theme.background
+        , width fill
+        , padding 10
+        , spacing 20
+        ]
+        [ text "ACCU 2019 Schedule"
+        , footerLink []
+            { url = "https://conference.accu.org/"
+            , label = text "Conference"
+            }
+        , footerLink [ spacing 5 ]
+            { url = "https://github.com/ACCUConf/Schedule_Web_Application"
+            , label =
+                image [ height (px 32) ]
+                    { src = "./img/GitHub-Mark-Light-32px.png"
+                    , description = "Github project"
+                    }
+            }
+        , footerLink [ alignRight ]
+            { url = "https://sixty-north.com"
+            , label =
+                row [ spacing 5 ]
+                    [ text "© 2017-2019 Sixty North AS"
+                    , image [ height (px 32) ]
+                        { src = "./img/sixty-north-logo.png"
+                        , description = "Sixty North AS"
+                        }
+                    ]
+            }
+        ]
 
 view : Model.Model -> Browser.Document Msg.Msg
 view model =
