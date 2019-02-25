@@ -10,7 +10,7 @@ import ACCUSchedule.Routing as Routing
 import ACCUSchedule.Types as Types
 import ACCUSchedule.View.Card as Card
 import ACCUSchedule.View.Theme as Theme
-import Element exposing (Element, column, fill, link, padding, row, text, width)
+import Element exposing (paragraph, centerX, Element, column, fill, link, padding, row, text, width)
 import Element.Background
 import Element.Border
 import Element.Font
@@ -33,7 +33,7 @@ presenterCard model presenter =
             Card.text []
                 [ Element.link []
                     { url = Routing.proposalUrl p.id
-                    , label = text p.title
+                    , label = paragraph [] [text p.title]
                     }
                 ]
 

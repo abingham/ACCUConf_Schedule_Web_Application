@@ -13,11 +13,12 @@ import ACCUSchedule.Types.Days as Days
 import ACCUSchedule.Types.QuickieSlots as QuickieSlots
 import ACCUSchedule.Types.Rooms as Rooms
 import ACCUSchedule.Types.Sessions as Sessions
+import ACCUSchedule.View.Card exposing (deck)
 import ACCUSchedule.View.PresenterCard exposing (presenterCard)
 import ACCUSchedule.View.ProposalCard exposing (proposalCard)
 import ACCUSchedule.View.Theme as Theme
 import Browser
-import Element exposing (Element, alignRight, centerY, column, el, fill, height, image, link, padding, px, rgb255, row, shrink, spacing, text, width)
+import Element exposing (centerX, Element, alignRight, centerY, column, el, fill, height, image, link, padding, px, rgb255, row, shrink, spacing, text, width)
 import Element.Background
 import Element.Font exposing (light, underline)
 import List exposing (append)
@@ -209,7 +210,7 @@ presentersView model =
     model.presenters
         |> List.sortBy .name
         |> List.map (presenterCard model)
-        |> column [padding 2, spacing 2]
+        |> deck model.view.windowSize [padding 10, spacing 5, centerX] 
 
 searchView : String -> Model.Model -> Element.Element Msg.Msg
 searchView term model =
