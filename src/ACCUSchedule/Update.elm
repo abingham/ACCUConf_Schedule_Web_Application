@@ -3,7 +3,6 @@ module ACCUSchedule.Update exposing (update)
 import ACCUSchedule.Comms as Comms
 import ACCUSchedule.Model exposing (Model, raisePresenter, raiseProposal)
 import ACCUSchedule.Msg as Msg
-import ACCUSchedule.Routing as Routing
 import ACCUSchedule.Storage as Storage
 import Browser
 import Browser.Navigation as Nav

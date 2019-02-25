@@ -71,9 +71,9 @@ findPresenter model id =
 --         , Options.css "flex-flow" "row wrap"
 --         ]
 --         elems
---sessionView : Model.Model -> List Types.Proposal -> Sessions.Session -> List (Html Msg.Msg)
--- sessionView model props session =
---     [text "session view"]
+sessionView : Model.Model -> List Types.Proposal -> Sessions.Session -> Element.Element Msg.Msg
+sessionView model props session =
+    text "session view"
 -- let
 --     room =
 --         .room >> Rooms.ordinal
@@ -114,11 +114,11 @@ findPresenter model id =
 --                     ]
 --                 , flowView cards
 --                 ]
--- {-| Display all proposals for a particular day.
--- -}
--- dayView : Model.Model -> List Types.Proposal -> Days.Day -> List (Html Msg.Msg)
--- dayView model proposals day =
---     [text "dayView"]
+{-| Display all proposals for a particular day.
+-}
+dayView : Model.Model -> List Types.Proposal -> Days.Day -> Element.Element Msg.Msg
+dayView model proposals day =
+    text "dayView"
 -- let
 --     props =
 --         List.filter (.day >> (==) day) proposals
@@ -130,11 +130,11 @@ findPresenter model id =
 --     List.map
 --         sview
 --         Sessions.conferenceSessions
--- {-| Display all "bookmarked" proposals, i.e. the users personal agenda.
--- -}
--- agendaView : Model.Model -> List (Html Msg.Msg)
--- agendaView model =
---     [text "agenda view"]
+{-| Display all "bookmarked" proposals, i.e. the users personal agenda.
+-}
+agendaView : Model.Model -> Element.Element Msg.Msg
+agendaView model =
+    text "agenda view"
 --     -- let
 --     props =
 --         List.filter (\p -> List.member p.id model.bookmarks) model.proposals
@@ -156,12 +156,12 @@ findPresenter model id =
 --         ]
 -- in
 --     List.concatMap dview Days.conferenceDays
--- {-| Display a single proposal. This includes all of the details of the proposal,
--- including the full text of the abstract.
--- -}
--- proposalView : Model.Model -> Types.Proposal -> Html Msg.Msg
--- proposalView model proposal =
---     text "proposal view"
+{-| Display a single proposal. This includes all of the details of the proposal,
+including the full text of the abstract.
+-}
+proposalView : Model.Model -> Types.Proposal -> Element.Element Msg.Msg
+proposalView model proposal =
+    text "proposal view"
 -- let
 --     room =
 --         Rooms.toString proposal.room
@@ -187,11 +187,11 @@ findPresenter model id =
 --             ]
 --             [ Asciidoc.toHtml [] proposal.summary ]
 --         ]
--- {-| Display a single presenter
--- -}
--- presenterView : Model.Model -> Types.Presenter -> Html Msg.Msg
--- presenterView model presenter =
---     text "presenter view"
+{-| Display a single presenter
+-}
+presenterView : Model.Model -> Types.Presenter -> Element.Element Msg.Msg
+presenterView model presenter =
+    text "presenter view"
 -- Options.div
 --     [ Options.css "display" "flex"
 --     , Options.css "flex-flow" "row wrap"
@@ -209,24 +209,23 @@ findPresenter model id =
 --         ]
 --         [ Markdown.toHtml [] presenter.bio ]
 --     ]
--- presentersView : Model.Model -> Html Msg.Msg
--- presentersView model =
---     text "presenters view"
+presentersView : Model.Model -> Element.Element Msg.Msg
+presentersView model =
+    text "presenters view"
 -- model.presenters
 --     |> List.sortBy .name
 --     |> List.map (presenterCard presenterCardGroup model)
 --     |> flowView
--- searchView : String -> Model.Model -> Html Msg.Msg
--- searchView term model =
---     text "search view"
+searchView : String -> Model.Model -> Element.Element Msg.Msg
+searchView term model =
+    text "search view"
 --     -- Search.search term model
 --     |> List.map (proposalCard proposalCardGroup model)
 --     |> flowView
--- notFoundView : Html Msg.Msg
--- notFoundView =
---     div []
---         [ text "view not found :("
---         ]
+
+notFoundView : Element.Element Msg.Msg
+notFoundView =
+    text "view not found :("
 -- drawerLink : String -> String -> Html Msg.Msg
 -- drawerLink url linkText =
 --     text "drawer link"
@@ -259,9 +258,31 @@ header =
         ]
 
 
-body : Element Msg.Msg
-body =
-    row [ height fill ] [ text "body" ]
+body : Model.Model -> Element Msg.Msg
+body model =
+    case Routing.urlToRoute model.url of
+            Routing.Day day ->
+                dayView model model.proposals day
+            Routing.Proposal id ->
+                case findProposal model id of
+                    Just proposal ->
+                        proposalView model proposal
+                    Nothing ->
+                        notFoundView
+            Routing.Presenter id ->
+                case findPresenter model id of
+                    Just presenter ->
+                        presenterView model presenter
+                    Nothing ->
+                        notFoundView
+            Routing.Presenters ->
+                presentersView model
+            Routing.Agenda ->
+                agendaView model
+            Routing.Search term ->
+                searchView term model
+            _ ->
+                 notFoundView
 
 
 footerLink : List (Element.Attribute Msg.Msg) -> { url : String, label : Element.Element Msg.Msg } -> Element.Element Msg.Msg
@@ -311,7 +332,7 @@ view model =
         [ Element.layout []
             (column [ height fill, width fill ]
                 [ header
-                , body
+                , body model
                 , footer
                 ]
             )

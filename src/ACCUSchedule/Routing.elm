@@ -1,14 +1,15 @@
+
 module ACCUSchedule.Routing exposing (..)
 
 import ACCUSchedule.Types as Types
 import ACCUSchedule.Types.Days as Days
 import Http
-import Url.Parser
 import Url
+import Url.Parser exposing (custom, parse, Parser, (</>), int, map, oneOf, s, string, top)
 
 {-| All of the possible routes that we can display
 -}
-type RoutePath
+type Route
     = Day Days.Day
     | Proposal Types.ProposalId
     | Presenter Types.PresenterId
@@ -49,28 +50,28 @@ type RoutePath
 --     "#/search/" ++ (Http.encodeUri term)
 
 
---| Parse the string form of a day ordinal to a result.
---}
--- parseDay : String -> Result String Days.Day
--- parseDay path =
---     let
---         matchDayOrd day rslt =
---             if (day |> (Days.ordinal >> toString)) == path then
---                 Ok day
---             else
---                 rslt
---     in
---         List.foldl
---             matchDayOrd
---             (Err "Invalid day")
---            Days.conferenceDays
+{-| Parse the string form of a day ordinal to a result.
+-}
+parseDay : String -> Maybe Days.Day
+parseDay path =
+    let
+        matchDayOrd dayOrd rslt =
+            if (dayOrd |> (Days.ordinal >> String.fromInt)) == path then
+                Just dayOrd
+            else
+                rslt
+    in
+        List.foldl
+            matchDayOrd
+            Nothing
+           Days.conferenceDays
 
 
---| Location parser for days encoded as integers
---}
--- day : Parser (Days.Day -> b) b
--- day =
---     custom "DAY" parseDay
+{-| Location parser for days encoded as integers
+-}
+day : Parser (Days.Day -> b) b
+day =
+    custom "DAY" parseDay
 
 
 --| Location parser for uri-encoded strings.
@@ -89,25 +90,19 @@ type RoutePath
 --         custom "URI_ENCODED" decode
 
 
--- matchers : Parser (RoutePath -> a) a
--- matchers =
---     oneOf
---         [ map (Day Days.Day1) top
---         , map Day (s "day" </> day)
---         , map Proposal (s "session" </> int)
---         , map Presenter (s "presenter" </> int)
---         , map Presenters (s "presenters")
---         , map Agenda (s "agenda")
---         , map Search (s "search" </> uriEncoded)
---         ]
+matchers : Parser (Route -> a) a
+matchers =
+    oneOf
+        [ map (Day Days.Day1) top
+        , map Day (s "day" </> day)
+        , map Proposal (s "session" </> int)
+        , map Presenter (s "presenter" </> int)
+        , map Presenters (s "presenters")
+        , map Agenda (s "agenda")
+        -- , map Search (s "search" </> uriEncoded)
+        ]
 
 
-parseLocation : Url.Url -> RoutePath
-parseLocation url =
-    NotFound
---     case (parseHash matchers location) of
---         Just route ->
---             route
-
---         Nothing ->
---             NotFound
+urlToRoute : Url.Url -> Route
+urlToRoute url =
+    Maybe.withDefault NotFound (parse matchers url)

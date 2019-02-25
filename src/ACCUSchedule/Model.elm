@@ -11,7 +11,6 @@ module ACCUSchedule.Model
 {-| The overal application model.
 -}
 
-import ACCUSchedule.Routing as Routing
 import ACCUSchedule.Types as Types
 import Browser.Navigation as Nav
 import Url
@@ -30,7 +29,6 @@ type alias Model =
     , bookmarks : List Types.ProposalId
     , url: Url.Url
     , key: Nav.Key
-    , location : Routing.RoutePath
     , view : ViewModel
     }
 
@@ -85,6 +83,5 @@ initialModel apiBaseUrl bookmarks key url =
     , bookmarks = bookmarks
     , url = url
     , key = key
-    , location = Routing.parseLocation url 
     , view = { raisedProposal = Nothing, raisedPresenter = Nothing }
     }
