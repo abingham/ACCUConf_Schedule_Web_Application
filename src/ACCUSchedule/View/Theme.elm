@@ -1,11 +1,9 @@
 module ACCUSchedule.View.Theme exposing (..)
 
-foo : Int
-foo = 42
+import Element exposing (Color, rgb255)
 
--- background : Color
--- background =
---     Color.grey
+background : Element.Color
+background = rgb255 200 200 200
 
 
 -- accent : Color
