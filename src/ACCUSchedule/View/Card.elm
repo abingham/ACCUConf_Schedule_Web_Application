@@ -6,61 +6,31 @@ import Element.Border
 import Element.Font
 
 
-view : List (Attribute Msg.Msg) -> List (Element Msg.Msg) -> Element Msg.Msg
-view attrs elems =
-    let
-        defaultAttrs =
-            [ width fill ]
+withDefaultAttrs : (List (Attribute Msg.Msg) -> List (Element Msg.Msg) -> Element Msg.Msg) -> List (Attribute Msg.Msg) -> List (Attribute Msg.Msg) -> List (Element Msg.Msg) -> Element Msg.Msg
+withDefaultAttrs elemType defaults attrs =
+    defaults ++ attrs |> elemType 
 
-        fullAttrs =
-            defaultAttrs ++ attrs
-    in
-    column fullAttrs elems
+
+view : List (Attribute Msg.Msg) -> List (Element Msg.Msg) -> Element Msg.Msg
+view =
+    withDefaultAttrs column [ width fill ]
 
 
 title : List (Attribute Msg.Msg) -> List (Element Msg.Msg) -> Element Msg.Msg
-title attrs elems =
-    let
-        defaultAttrs =
-            [ width fill, padding 2 ]
-
-        fullAttrs =
-            defaultAttrs ++ attrs
-    in
-    column fullAttrs elems
+title =
+    withDefaultAttrs column [ width fill, padding 2 ]
 
 
 head : List (Attribute Msg.Msg) -> List (Element Msg.Msg) -> Element Msg.Msg
-head attrs elems =
-    let
-        defaultAttrs =
-            [ width fill, Element.Font.bold ]
-
-        fullAttrs =
-            defaultAttrs ++ attrs
-    in
-    row fullAttrs elems
+head =
+    withDefaultAttrs row [ width fill, Element.Font.bold ]
 
 
 subhead : List (Attribute Msg.Msg) -> List (Element Msg.Msg) -> Element Msg.Msg
-subhead attrs elems =
-    let
-        defaultAttrs =
-            [ width fill, Element.Font.light ]
-
-        fullAttrs =
-            defaultAttrs ++ attrs
-    in
-    row fullAttrs elems
+subhead =
+    withDefaultAttrs row [ width fill, Element.Font.light ]
 
 
 text : List (Attribute Msg.Msg) -> List (Element Msg.Msg) -> Element Msg.Msg
-text attrs elems =
-    let
-        defaultAttrs =
-            [ width fill, padding 2 ]
-
-        fullAttrs =
-            defaultAttrs ++ attrs
-    in
-    row fullAttrs elems
+text =
+    withDefaultAttrs row [ width fill, padding 2 ]
