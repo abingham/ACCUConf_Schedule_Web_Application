@@ -33,13 +33,13 @@ type Route
 --     "#/agenda"
 
 
--- proposalUrl : Types.ProposalId -> String
--- proposalUrl proposalId =
---     "#/session/" ++ (toString proposalId)
+proposalUrl : Types.ProposalId -> String
+proposalUrl proposalId =
+    "/session/" ++ (String.fromInt proposalId)
 
--- presenterUrl : Types.PresenterId -> String
--- presenterUrl presenterId =
---     "#/presenter/" ++ (toString presenterId)
+presenterUrl : Types.PresenterId -> String
+presenterUrl presenterId =
+    "/presenter/" ++ (String.fromInt presenterId)
 
 
 -- presentersUrl : String

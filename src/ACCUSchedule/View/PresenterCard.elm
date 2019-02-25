@@ -8,97 +8,51 @@ import ACCUSchedule.Model as Model
 import ACCUSchedule.Msg as Msg
 import ACCUSchedule.Routing as Routing
 import ACCUSchedule.Types as Types
+import ACCUSchedule.View.Card as Card
 import ACCUSchedule.View.Theme as Theme
-import Html exposing (a, br, div, h1, Html, img, p, text)
-
-
-{-| The control group for presenter-details buttons.
--}
-presenterDetailsControlGroup : Int
-presenterDetailsControlGroup =
-    0
+import Element exposing (Element, column, fill, link, padding, row, text, width)
+import Element.Background
+import Element.Border
+import Element.Font
 
 
 {-| A card view for a single presenter. The `controlGroup` argument is the first
 element in the `Index` argument for MDL controls; use it to differentiate
 presenter-card buttons from buttons in other parts of the view.
 
-    div [] [presenterCard 0 model presenter]
+    div [] [ presenterCard 0 model presenter ]
+
 -}
-presenterCard : Int -> Model.Model -> Types.Presenter -> Html Msg.Msg
-presenterCard controlGroup model presenter =
-    text "presenter card"
-    -- let
-    --     proposalLink proposal =
-    --         Lists.li []
-    --             [ Lists.content []
-    --                 [ Layout.link
-    --                     [ Layout.href (Routing.proposalUrl proposal.id) ]
-    --                     [ text <| proposal.title ]
-    --                 ]
-    --             ]
+presenterCard : Model.Model -> Types.Presenter -> Element Msg.Msg
+presenterCard model presenter =
+    let
+        proposals =
+            Model.proposals model presenter
 
-    --     country =
-    --         case ISO3166.countryName presenter.country of
-    --             Just name ->
-    --                 name
+        proposalLink p =
+            Card.text []
+                [ Element.link []
+                    { url = Routing.proposalUrl p.id
+                    , label = text p.title
+                    }
+                ]
 
-    --             Nothing ->
-    --                 presenter.country
+        proposalLinks =
+            List.map proposalLink proposals
 
-    --     detailsButton =
-    --         Button.render Msg.Mdl
-    --             [ controlGroup
-    --             , presenterDetailsControlGroup
-    --             , presenter.id
-    --             ]
-    --             model.mdl
-    --             [ Button.ripple
-    --             , Button.link <| Routing.presenterUrl presenter.id
-    --             ]
-    --             [ text "details" ]
-    -- in
-    --     Card.view
-    --         [ Options.css "margin-right" "5px"
-    --         , Options.css "margin-bottom" "10px"
-    --         , case model.view.raisedPresenter of
-    --               Just id ->
-    --                   if id == presenter.id then
-    --                       Elevation.e8
-    --                   else
-    --                       Elevation.e2
-    --               _ ->
-    --                   Elevation.e2
-    --         , Color.background Theme.background
-    --         , Options.onMouseEnter (Msg.RaisePresenter True presenter.id)
-    --         , Options.onMouseLeave (Msg.RaisePresenter False presenter.id)
-    --         , Options.css "border-width" "1px"
-    --         , Options.css "border-color" "#aaaaaa"
-    --         , Options.css "border-style" "solid"
-    --         ]
-    --         [ Card.title
-    --             [ Color.text Color.black
-    --             , Card.border
-    --             ]
-    --             [ Card.head
-    --                 [ Options.onClick <| Msg.VisitPresenter presenter
-    --                 ]
-    --                 [ text presenter.name ]
-    --             , Card.subhead [] [ text country ]
-    --             ]
-    --         , Card.text
-    --             [ Color.text Color.black
-    --             ]
-    --             [ Lists.ul [] (List.map proposalLink (Model.proposals model presenter)) ]
-    --         , Card.text
-    --             [ Card.expand ]
-    --             []
-    --         , Card.actions
-    --             [ Color.background Theme.accent
-    --             , Typo.left
-    --             , Options.css "justify-content" "space-between"
-    --             , Options.css "display" "flex"
-    --             ]
-    --             [ detailsButton
-    --             ]
-    --         ]
+        country =
+            case ISO3166.countryName presenter.country of
+                Just name ->
+                    name
+
+                Nothing ->
+                    presenter.country
+    in
+    Card.view [ Element.Border.width 1, Element.Border.color Theme.lightGray ]
+        ([ Card.title [ Element.Background.color Theme.accent, Element.Font.color Theme.white ]
+            [ Card.head [] [ text presenter.name ]
+            , Card.subhead [ Element.Font.size (Theme.fontSize -1) ] [ text country ]
+            ]
+         ]
+            ++ proposalLinks
+        )

@@ -28,19 +28,14 @@ import List exposing (append)
 -- import Html.Attributes exposing (height, href, src)
 
 
-proposalCardGroup : Int
-proposalCardGroup =
-    0
+-- proposalCardGroup : Int
+-- proposalCardGroup =
+--     0
 
 
-presenterCardGroup : Int
-presenterCardGroup =
-    1
-
-
-searchFieldControlGroup : Int
-searchFieldControlGroup =
-    2
+-- searchFieldControlGroup : Int
+-- searchFieldControlGroup =
+--     2
 
 
 {-| Find a proposal based on a string representation of its id.
@@ -211,11 +206,11 @@ presenterView model presenter =
 --     ]
 presentersView : Model.Model -> Element.Element Msg.Msg
 presentersView model =
-    text "presenters view"
--- model.presenters
---     |> List.sortBy .name
---     |> List.map (presenterCard presenterCardGroup model)
---     |> flowView
+    model.presenters
+        |> List.sortBy .name
+        |> List.map (presenterCard model)
+        |> column [padding 2, spacing 2]
+
 searchView : String -> Model.Model -> Element.Element Msg.Msg
 searchView term model =
     text "search view"
@@ -329,7 +324,7 @@ view : Model.Model -> Browser.Document Msg.Msg
 view model =
     { title = "ACCU 2019"
     , body =
-        [ Element.layout []
+        [ Element.layout [Element.Font.size (Theme.fontSize 1)]
             (column [ height fill, width fill ]
                 [ header
                 , body model
