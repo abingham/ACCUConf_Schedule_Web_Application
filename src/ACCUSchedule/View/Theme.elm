@@ -1,4 +1,4 @@
-module ACCUSchedule.View.Theme exposing (accent, background, fontSize, lightGray, white)
+module ACCUSchedule.View.Theme exposing (accent, background, fontSize, gray, lightGray, white)
 
 import Element
 
@@ -21,6 +21,11 @@ white =
 lightGray : Element.Color
 lightGray =
     Element.rgb255 238 238 238
+
+
+gray : Element.Color
+gray =
+    Element.rgb255 126 126 126
 
 
 fontSize : Int -> Int

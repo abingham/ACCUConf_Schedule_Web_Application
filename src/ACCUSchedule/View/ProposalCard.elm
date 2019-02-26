@@ -9,7 +9,8 @@ import ACCUSchedule.Types.QuickieSlots as QuickieSlots
 import ACCUSchedule.Types.Rooms as Rooms
 import ACCUSchedule.Types.Sessions as Sessions
 import ACCUSchedule.View.Card as Card
-import Element exposing (paragraph, text)
+import Element exposing (image, paragraph, text)
+import Element.Events exposing (onClick)
 
 
 {-| A card-view of a single proposal. This displays the title, presenters,
@@ -26,11 +27,13 @@ proposalCard model proposal =
         time =
             Sessions.toString proposal.session
 
-        slot = 
+        slot =
             case proposal.quickieSlot of
                 Just s ->
                     "(" ++ QuickieSlots.toString s ++ ")"
-                _ -> ""
+
+                _ ->
+                    ""
 
         dayLink =
             Element.link []
@@ -57,11 +60,11 @@ proposalCard model proposal =
         head =
             Card.head [] [ paragraph [] [ proposalLink ] ]
 
-        timeSubhead = 
-            Card.subhead [] [paragraph [] [dayLink, text (" " ++ time ++ " " ++ slot)]]
+        timeSubhead =
+            Card.subhead [] [ paragraph [] [ dayLink, text (" " ++ time ++ " " ++ slot) ] ]
 
         roomSubhead =
-            Card.subhead [] [paragraph [] [ text room ]]
+            Card.subhead [] [ paragraph [] [ text room ] ]
 
         title =
             Card.title [] [ head, timeSubhead, roomSubhead ]
@@ -69,7 +72,23 @@ proposalCard model proposal =
         body =
             List.map (\l -> Card.text [] [ l ]) presenterLinks
 
+        bookmarkAction =
+            if List.member proposal.id model.bookmarks then
+                image [onClick (Msg.ToggleBookmark proposal.id)]
+                    { src = "/img/filled-heart.png"
+                    , description = "Remove from agenda"
+                    }
+
+            else
+                image [onClick (Msg.ToggleBookmark proposal.id)]
+                    { src = "/img/heart.png"
+                    , description = "Add to agenda"
+                    }
+
+        actions =
+            Card.actions [] [ bookmarkAction ]
+
         content =
-            title :: body
+            title :: body ++ [ actions ]
     in
     Card.view [] content

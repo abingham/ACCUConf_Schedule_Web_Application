@@ -1,4 +1,4 @@
-module ACCUSchedule.View.Card exposing (deck, head, subhead, text, title, view)
+module ACCUSchedule.View.Card exposing (actions, deck, head, subhead, text, title, view)
 
 import ACCUSchedule.Msg as Msg
 import ACCUSchedule.View.Theme as Theme
@@ -27,7 +27,7 @@ title : List (Attribute Msg.Msg) -> List (Element Msg.Msg) -> Element Msg.Msg
 title =
     withDefaultAttrs column
         [ width fill
-        , spacing 10 
+        , spacing 10
         , padding 20
         , Element.Background.color Theme.accent
         , Element.Font.color Theme.white
@@ -51,6 +51,17 @@ subhead =
 text : List (Attribute Msg.Msg) -> List (Element Msg.Msg) -> Element Msg.Msg
 text =
     withDefaultAttrs paragraph [ width fill, padding 10 ]
+
+
+actions : List (Attribute Msg.Msg) -> List (Element Msg.Msg) -> Element Msg.Msg
+actions =
+    withDefaultAttrs row
+        [ width fill
+        , spacing 10
+        , padding 20
+        , Element.Background.color Theme.background
+        , Element.Font.color Theme.gray
+        ]
 
 
 intoChunks : Int -> List a -> List (List a)
