@@ -210,7 +210,7 @@ presentersView model =
     model.presenters
         |> List.sortBy .name
         |> List.map (presenterCard model)
-        |> deck model.view.windowSize [padding 10, spacing 5, centerX] 
+        |> deck model.view.windowSize [padding 10, spacing 10, centerX] 
 
 searchView : String -> Model.Model -> Element.Element Msg.Msg
 searchView term model =

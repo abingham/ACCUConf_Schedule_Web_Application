@@ -18,7 +18,7 @@ view =
 
 title : List (Attribute Msg.Msg) -> List (Element Msg.Msg) -> Element Msg.Msg
 title =
-    withDefaultAttrs column [ width fill, padding 2 ]
+    withDefaultAttrs column [ width fill, padding 10 ]
 
 
 head : List (Attribute Msg.Msg) -> List (Element Msg.Msg) -> Element Msg.Msg
@@ -33,7 +33,7 @@ subhead =
 
 text : List (Attribute Msg.Msg) -> List (Element Msg.Msg) -> Element Msg.Msg
 text =
-    withDefaultAttrs paragraph [ width fill, padding 2 ]
+    withDefaultAttrs paragraph [ width fill, padding 10 ]
 
 
 intoChunks : Int -> List a -> List (List a)
@@ -72,6 +72,6 @@ deck windowSize attrs cards =
             intoChunks chunkSize cards
 
         -- TODO: this hardcoded 300 is a mess. Can we instead calculate something?
-        columns = List.map (column [alignTop, width (px 300)]) chunks
+        columns = List.map (column [alignTop, spacing 10, width (px 300)]) chunks
     in
     row attrs columns
