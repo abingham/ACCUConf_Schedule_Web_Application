@@ -112,15 +112,14 @@ dayView model proposals day =
 -}
 agendaView : Model.Model -> Element.Element Msg.Msg
 agendaView model =
-    let
-        props =
-            List.filter (\p -> List.member p.id model.bookmarks) model.proposals
-                |> List.sortBy (.session >> Sessions.ordinal)
+    -- TODO: The ordering of cards should be reviewed.
+    -- TODO: Should we split them out by days?
+    model.proposals
+        |> List.filter (\p -> List.member p.id model.bookmarks)
+        >> List.sortBy (.session >> Sessions.ordinal)
+        >> List.map (\p -> proposalCard model p)
+        >> deck model.view.windowSize
 
-        cards = List.map (\p -> proposalCard model p) props
-
-    in
-        deck model.view.windowSize cards
 
 {-| Display a single proposal. This includes all of the details of the proposal,
 including the full text of the abstract.
