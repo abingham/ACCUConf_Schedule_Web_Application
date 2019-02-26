@@ -67,65 +67,63 @@ findPresenter model id =
 --         , Options.css "flex-flow" "row wrap"
 --         ]
 --         elems
+
 sessionView : Model.Model -> List Types.Proposal -> Sessions.Session -> Element.Element Msg.Msg
 sessionView model props session =
-    text "session view"
--- let
---     room =
---         .room >> Rooms.ordinal
---     compareRooms p1 p2 =
---         compare (room p1) (room p2)
---     compareSlots p1 p2 =
---         case ( p1.quickieSlot, p2.quickieSlot ) of
---             ( Nothing, Nothing ) ->
---                 EQ
---             ( Nothing, _ ) ->
---                 LT
---             ( _, Nothing ) ->
---                 GT
---             ( Just s1, Just s2 ) ->
---                 compare (QuickieSlots.ordinal s1) (QuickieSlots.ordinal s2)
---     proposals =
---         List.filter (.session >> (==) session) props
---             |> stableSortWith compareSlots
---             |> stableSortWith compareRooms
--- in
---     case List.head proposals of
---         Nothing ->
---             []
---         Just prop ->
---             let
---                 s =
---                     Sessions.toString prop.session
---                 d =
---                     Days.toString prop.day
---                 label =
---                     d ++ ", " ++ s
---                 cards =
---                     List.map (proposalCard proposalCardGroup model) proposals
---             in
---                 [ Chip.span [ Options.css "margin-bottom" "5px" ]
---                     [ Chip.content []
---                         [ text label ]
---                     ]
---                 , flowView cards
---                 ]
+    let
+        room =
+            .room >> Rooms.ordinal
+        compareRooms p1 p2 =
+            compare (room p1) (room p2)
+        compareSlots p1 p2 =
+            case ( p1.quickieSlot, p2.quickieSlot ) of
+                ( Nothing, Nothing ) ->
+                    EQ
+                ( Nothing, _ ) ->
+                    LT
+                ( _, Nothing ) ->
+                    GT
+                ( Just s1, Just s2 ) ->
+                    compare (QuickieSlots.ordinal s1) (QuickieSlots.ordinal s2)
+        proposals =
+            List.filter (.session >> (==) session) props
+                |> List.sortWith compareSlots
+                |> List.sortWith compareRooms
+    in
+        case List.head proposals of
+            Nothing ->
+                 row [] []
+            Just prop ->
+                let
+                    s =
+                        Sessions.toString prop.session
+                    d =
+                        Days.toString prop.day
+                    label =
+                        d ++ ", " ++ s
+                    cards =
+                        List.map (proposalCard model) proposals
+                in
+                column []
+                [ text label
+                , deck model.view.windowSize cards
+                ]
+
 {-| Display all proposals for a particular day.
 -}
 dayView : Model.Model -> List Types.Proposal -> Days.Day -> Element.Element Msg.Msg
 dayView model proposals day =
-    text "dayView"
--- let
---     props =
---         List.filter (.day >> (==) day) proposals
---     sview =
---         sessionView model props
---             >> Options.styled div
---                 [ Options.css "margin-bottom" "10px" ]
--- in
---     List.map
---         sview
---         Sessions.conferenceSessions
+    let
+        props =
+            List.filter (.day >> (==) day) proposals
+        sview =
+            sessionView model props
+    in
+        List.map
+            sview
+        Sessions.conferenceSessions
+        |> column [centerX]
+
 {-| Display all "bookmarked" proposals, i.e. the users personal agenda.
 -}
 agendaView : Model.Model -> Element.Element Msg.Msg
@@ -210,7 +208,7 @@ presentersView model =
     model.presenters
         |> List.sortBy .name
         |> List.map (presenterCard model)
-        |> deck model.view.windowSize [padding 10, spacing 10, centerX] 
+        |> deck model.view.windowSize 
 
 searchView : String -> Model.Model -> Element.Element Msg.Msg
 searchView term model =
@@ -248,7 +246,7 @@ header =
         , padding 10
         ]
         [ image []
-            { src = "./img/accu-logo.png"
+            { src = "/img/accu-logo.png"
             , description = "ACCU logo"
             }
         ]
@@ -304,7 +302,7 @@ footer =
             { url = "https://github.com/ACCUConf/Schedule_Web_Application"
             , label =
                 image [ height (px 32) ]
-                    { src = "./img/GitHub-Mark-Light-32px.png"
+                    { src = "/img/GitHub-Mark-Light-32px.png"
                     , description = "Github project"
                     }
             }
@@ -314,7 +312,7 @@ footer =
                 row [ spacing 5 ]
                     [ text "© 2017-2019 Sixty North AS"
                     , image [ height (px 32) ]
-                        { src = "./img/sixty-north-logo.png"
+                        { src = "/img/sixty-north-logo.png"
                         , description = "Sixty North AS"
                         }
                     ]

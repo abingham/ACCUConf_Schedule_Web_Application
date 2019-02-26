@@ -48,10 +48,10 @@ presenterCard model presenter =
                 Nothing ->
                     presenter.country
     in
-    Card.view [ Element.Border.width 1, Element.Border.color Theme.lightGray ]
-        ([ Card.title [ Element.Background.color Theme.accent, Element.Font.color Theme.white ]
+    Card.view []
+        ([ Card.title []
             [ Card.head [] [ text presenter.name ]
-            , Card.subhead [ Element.Font.size (Theme.fontSize -1) ] [ text country ]
+            , Card.subhead [] [ text country ]
             ]
          ]
             ++ proposalLinks

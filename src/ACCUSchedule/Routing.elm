@@ -19,13 +19,13 @@ type Route
     | NotFound
 
 
--- dayUrl : Days.Day -> String
--- dayUrl day =
---     let
---         dayNum =
---             Days.ordinal day |> toString
---     in
---         "#/day/" ++ dayNum
+dayUrl : Days.Day -> String
+dayUrl day =
+    let
+        dayNum =
+            Days.ordinal day |> String.fromInt
+    in
+        "/day/" ++ dayNum
 
 
 -- agendaUrl : String
@@ -69,8 +69,8 @@ parseDay path =
 
 {-| Location parser for days encoded as integers
 -}
-day : Parser (Days.Day -> b) b
-day =
+dayParser : Parser (Days.Day -> b) b
+dayParser =
     custom "DAY" parseDay
 
 
@@ -94,7 +94,7 @@ matchers : Parser (Route -> a) a
 matchers =
     oneOf
         [ map (Day Days.Day1) top
-        , map Day (s "day" </> day)
+        , map Day (s "day" </> dayParser)
         , map Proposal (s "session" </> int)
         , map Presenter (s "presenter" </> int)
         , map Presenters (s "presenters")
