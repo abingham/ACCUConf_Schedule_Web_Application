@@ -2,7 +2,6 @@ module ACCUSchedule.Msg exposing (Msg(..))
 
 import ACCUSchedule.Types as Types
 import Browser
-import Element
 import Http
 import Url
 

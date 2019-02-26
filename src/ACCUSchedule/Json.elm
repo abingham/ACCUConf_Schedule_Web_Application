@@ -1,4 +1,4 @@
-module ACCUSchedule.Json exposing (..)
+module ACCUSchedule.Json exposing (presentersDecoder, proposalsDecoder)
 
 import ACCUSchedule.Types as Types
 import ACCUSchedule.Types.Days as Days
@@ -6,7 +6,7 @@ import ACCUSchedule.Types.QuickieSlots as QuickieSlots
 import ACCUSchedule.Types.Rooms as Rooms
 import ACCUSchedule.Types.Sessions as Sessions
 import Json.Decode exposing (andThen, Decoder, fail, int, list, maybe, string, succeed)
-import Json.Decode.Pipeline exposing (hardcoded, optional, required)
+import Json.Decode.Pipeline exposing (optional, required)
 import List
 
 
@@ -108,21 +108,21 @@ room =
         string |> andThen decode
 
 
-track : Decoder Types.Track
-track =
-    let
-        decode s =
-            case s of
-                "cpp" ->
-                    succeed Types.CppTrack
+-- track : Decoder Types.Track
+-- track =
+--     let
+--         decode s =
+--             case s of
+--                 "cpp" ->
+--                     succeed Types.CppTrack
 
-                "other" ->
-                    succeed Types.OtherTrack
+--                 "other" ->
+--                     succeed Types.OtherTrack
 
-                _ ->
-                    fail ("invalid track: " ++ s)
-    in
-        string |> andThen decode
+--                 _ ->
+--                     fail ("invalid track: " ++ s)
+--     in
+--         string |> andThen decode
 
 
 listDecoder : Decoder a -> Decoder (List a)

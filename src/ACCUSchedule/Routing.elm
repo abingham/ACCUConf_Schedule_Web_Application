@@ -1,11 +1,10 @@
 
-module ACCUSchedule.Routing exposing (..)
+module ACCUSchedule.Routing exposing (dayUrl, proposalUrl, presenterUrl, urlToRoute, Route(..))
 
 import ACCUSchedule.Types as Types
 import ACCUSchedule.Types.Days as Days
-import Http
 import Url
-import Url.Parser exposing (custom, parse, Parser, (</>), int, map, oneOf, s, string, top)
+import Url.Parser exposing (custom, parse, Parser, (</>), int, map, oneOf, s, top)
 
 {-| All of the possible routes that we can display
 -}
@@ -35,11 +34,11 @@ dayUrl day =
 
 proposalUrl : Types.ProposalId -> String
 proposalUrl proposalId =
-    "/session/" ++ (String.fromInt proposalId)
+    "/session/" ++ String.fromInt proposalId
 
 presenterUrl : Types.PresenterId -> String
 presenterUrl presenterId =
-    "/presenter/" ++ (String.fromInt presenterId)
+    "/presenter/" ++ String.fromInt presenterId
 
 
 -- presentersUrl : String

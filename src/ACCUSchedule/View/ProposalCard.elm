@@ -9,11 +9,7 @@ import ACCUSchedule.Types.QuickieSlots as QuickieSlots
 import ACCUSchedule.Types.Rooms as Rooms
 import ACCUSchedule.Types.Sessions as Sessions
 import ACCUSchedule.View.Card as Card
-import ACCUSchedule.View.Theme as Theme
-import Element exposing (Element, paragraph, text)
-import Element.Background
-import Element.Border
-import Element.Font
+import Element exposing (paragraph, text)
 
 
 {-| A card-view of a single proposal. This displays the title, presenters,
@@ -30,14 +26,11 @@ proposalCard model proposal =
         time =
             Sessions.toString proposal.session
 
-        location =
-            String.join ", " <|
-                case proposal.quickieSlot of
-                    Just slot ->
-                        [ time, QuickieSlots.toString slot, room ]
-
-                    _ ->
-                        [ time, room ]
+        slot = 
+            case proposal.quickieSlot of
+                Just s ->
+                    "(" ++ QuickieSlots.toString s ++ ")"
+                _ -> ""
 
         dayLink =
             Element.link []
@@ -64,15 +57,19 @@ proposalCard model proposal =
         head =
             Card.head [] [ paragraph [] [ proposalLink ] ]
 
-        subhead =
-            Card.subhead [] [ paragraph [] [ dayLink ] ]
+        timeSubhead = 
+            Card.subhead [] [paragraph [] [dayLink, text (" " ++ time ++ " " ++ slot)]]
+
+        roomSubhead =
+            Card.subhead [] [paragraph [] [ text room ]]
 
         title =
-            Card.title [] [ head, subhead ]
+            Card.title [] [ head, timeSubhead, roomSubhead ]
 
         body =
             List.map (\l -> Card.text [] [ l ]) presenterLinks
+
+        content =
+            title :: body
     in
-    title
-        :: body
-        |> Card.view []
+    Card.view [] content

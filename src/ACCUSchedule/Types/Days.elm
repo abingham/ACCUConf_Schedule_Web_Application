@@ -1,4 +1,4 @@
-module ACCUSchedule.Types.Days exposing (..)
+module ACCUSchedule.Types.Days exposing (conferenceDays, Day(..), ordinal, toString)
 
 type Day
     = Workshops

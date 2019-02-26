@@ -18,7 +18,10 @@ import Url
 type alias ViewModel =
     { raisedProposal : Maybe Types.ProposalId
     , raisedPresenter : Maybe Types.PresenterId
-    , windowSize : { width : Int, height : Int }
+    , windowSize :
+        { width : Int
+        , height : Int
+        }
     }
 
 
@@ -85,9 +88,12 @@ initialModel apiBaseUrl bookmarks key url width height =
     , bookmarks = bookmarks
     , url = url
     , key = key
-    , view = { raisedProposal = Nothing
-             , raisedPresenter = Nothing
-             , windowSize = { width = width
-                       , height = height
-                        }
-                        }}
+    , view =
+        { raisedProposal = Nothing
+        , raisedPresenter = Nothing
+        , windowSize =
+            { width = width
+            , height = height
+            }
+        }
+    }

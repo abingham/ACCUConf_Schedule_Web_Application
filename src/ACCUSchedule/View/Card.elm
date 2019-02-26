@@ -2,7 +2,7 @@ module ACCUSchedule.View.Card exposing (deck, head, subhead, text, title, view)
 
 import ACCUSchedule.Msg as Msg
 import ACCUSchedule.View.Theme as Theme
-import Element exposing (Attribute, Element, alignTop, centerX, column, fill, fillPortion, padding, paragraph, px, row, spacing, width)
+import Element exposing (Attribute, Element, alignTop, centerX, column, fill, padding, paragraph, px, row, spacing, width)
 import Element.Background
 import Element.Border
 import Element.Font
@@ -15,22 +15,22 @@ withDefaultAttrs elemType defaults attrs =
 
 view : List (Attribute Msg.Msg) -> List (Element Msg.Msg) -> Element Msg.Msg
 view =
-    withDefaultAttrs column 
-    [ width fill
-    , Element.Border.width 1
-    , Element.Border.color Theme.lightGray
-    ]
+    withDefaultAttrs column
+        [ width fill
+        , Element.Border.width 1
+        , Element.Border.color Theme.lightGray
+        ]
 
 
 title : List (Attribute Msg.Msg) -> List (Element Msg.Msg) -> Element Msg.Msg
 title =
-    withDefaultAttrs column 
-    [ width fill
-    , spacing 5
-    , padding 10 
-    , Element.Background.color Theme.accent
-    , Element.Font.color Theme.white
-    ]
+    withDefaultAttrs column
+        [ width fill
+        , spacing 5
+        , padding 10
+        , Element.Background.color Theme.accent
+        , Element.Font.color Theme.white
+        ]
 
 
 head : List (Attribute Msg.Msg) -> List (Element Msg.Msg) -> Element Msg.Msg
@@ -40,11 +40,11 @@ head =
 
 subhead : List (Attribute Msg.Msg) -> List (Element Msg.Msg) -> Element Msg.Msg
 subhead =
-    withDefaultAttrs row 
-    [ width fill
-    , Element.Font.light 
-    , Element.Font.size (Theme.fontSize -1) 
-    ]
+    withDefaultAttrs row
+        [ width fill
+        , Element.Font.light
+        , Element.Font.size (Theme.fontSize -1)
+        ]
 
 
 text : List (Attribute Msg.Msg) -> List (Element Msg.Msg) -> Element Msg.Msg
@@ -58,7 +58,7 @@ intoChunks size xs =
         [ xs ]
 
     else
-        [ List.take size xs ] ++ intoChunks size (List.drop size xs)
+        List.take size xs :: intoChunks size (List.drop size xs)
 
 
 deck : { width : Int, height : Int } -> List (Element Msg.Msg) -> Element Msg.Msg

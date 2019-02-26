@@ -1,4 +1,4 @@
-module ACCUSchedule.Types.Rooms exposing (..)
+module ACCUSchedule.Types.Rooms exposing (Room(..), ordinal, toString)
 
 
 type Room

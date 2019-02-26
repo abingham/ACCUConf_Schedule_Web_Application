@@ -22,7 +22,7 @@ update msg model =
         Msg.ProposalsResult (Ok proposals) ->
             ({ model | proposals = proposals }, Cmd.none)
 
-        Msg.ProposalsResult (Err errMsg) ->
+        Msg.ProposalsResult (Err _) ->
             -- TODO: display error message or something...maybe a button for
             -- re-fetching the proposals.
             (model, Cmd.none)
@@ -30,7 +30,7 @@ update msg model =
         Msg.PresentersResult (Ok presenters) ->
             ({ model | presenters = presenters }, Cmd.none)
 
-        Msg.PresentersResult (Err errMsg) ->
+        Msg.PresentersResult (Err _) ->
             -- TODO: display error message or something...
             (model, Cmd.none)
 
@@ -53,7 +53,7 @@ update msg model =
             singleton model
                 |> map (raisePresenter raised id)
 
-        Msg.Batch msgs ->
+        Msg.Batch _ ->
             (model, Cmd.none) -- TODO [ Dispatch.forward msgs ]
 
         Msg.LinkClicked urlRequest ->

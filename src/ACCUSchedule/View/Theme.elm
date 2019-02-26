@@ -1,19 +1,28 @@
-module ACCUSchedule.View.Theme exposing (..)
+module ACCUSchedule.View.Theme exposing (accent, background, fontSize, lightGray, white)
 
-import Element exposing (modular, Color, rgb255)
+import Element
+
 
 background : Element.Color
-background = lightGray
+background =
+    lightGray
 
 
 accent : Element.Color
-accent = rgb255 169 1 247
+accent =
+    Element.rgb255 169 1 247
+
 
 white : Element.Color
-white = rgb255 255 255 255
+white =
+    Element.rgb255 255 255 255
+
 
 lightGray : Element.Color
-lightGray = rgb255 238 238 238 
+lightGray =
+    Element.rgb255 238 238 238
+
 
 fontSize : Int -> Int
-fontSize = modular 16 1.25 >> round
+fontSize =
+    Element.modular 16 1.25 >> round

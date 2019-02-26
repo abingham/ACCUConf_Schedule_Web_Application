@@ -1,4 +1,4 @@
-port module ACCUSchedule.Storage exposing (..)
+port module ACCUSchedule.Storage exposing (store)
 
 import ACCUSchedule.Types as Types
 

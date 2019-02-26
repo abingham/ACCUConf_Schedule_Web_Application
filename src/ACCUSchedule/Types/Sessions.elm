@@ -1,4 +1,5 @@
-module ACCUSchedule.Types.Sessions exposing (..)
+module ACCUSchedule.Types.Sessions exposing (Session(..), conferenceSessions, ordinal, toString)
+
 
 type Session
     = Session1

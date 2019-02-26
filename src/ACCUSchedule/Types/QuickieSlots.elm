@@ -1,4 +1,4 @@
-module ACCUSchedule.Types.QuickieSlots exposing (..)
+module ACCUSchedule.Types.QuickieSlots exposing (QuickieSlot(..), ordinal, toString)
 
 
 type QuickieSlot

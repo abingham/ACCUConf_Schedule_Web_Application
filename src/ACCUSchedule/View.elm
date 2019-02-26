@@ -3,11 +3,11 @@ module ACCUSchedule.View exposing (view)
 -- import ACCUSchedule.View.Theme as Theme
 -- import List.Extra exposing (stableSortWith)
 
-import ACCUSchedule.Asciidoc as Asciidoc
+-- import ACCUSchedule.Asciidoc as Asciidoc
 import ACCUSchedule.Model as Model
 import ACCUSchedule.Msg as Msg
 import ACCUSchedule.Routing as Routing
-import ACCUSchedule.Search as Search
+-- import ACCUSchedule.Search as Search
 import ACCUSchedule.Types as Types
 import ACCUSchedule.Types.Days as Days
 import ACCUSchedule.Types.QuickieSlots as QuickieSlots
@@ -18,9 +18,9 @@ import ACCUSchedule.View.PresenterCard exposing (presenterCard)
 import ACCUSchedule.View.ProposalCard exposing (proposalCard)
 import ACCUSchedule.View.Theme as Theme
 import Browser
-import Element exposing (centerX, Element, alignRight, centerY, column, el, fill, height, image, link, padding, px, rgb255, row, shrink, spacing, text, width)
+import Element exposing (centerX, Element, alignRight, column, fill, height, image, link, padding, px, row, shrink, spacing, text, width)
 import Element.Background
-import Element.Font exposing (light, underline)
+import Element.Font exposing (light)
 import List exposing (append)
 
 

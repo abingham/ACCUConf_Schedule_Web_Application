@@ -9,11 +9,7 @@ import ACCUSchedule.Msg as Msg
 import ACCUSchedule.Routing as Routing
 import ACCUSchedule.Types as Types
 import ACCUSchedule.View.Card as Card
-import ACCUSchedule.View.Theme as Theme
-import Element exposing (paragraph, centerX, Element, column, fill, link, padding, row, text, width)
-import Element.Background
-import Element.Border
-import Element.Font
+import Element exposing (Element, link, paragraph, text)
 
 
 {-| A card view for a single presenter. The `controlGroup` argument is the first
@@ -33,12 +29,12 @@ presenterCard model presenter =
             Card.text []
                 [ Element.link []
                     { url = Routing.proposalUrl p.id
-                    , label = paragraph [] [text p.title]
+                    , label = paragraph [] [ text p.title ]
                     }
                 ]
 
         proposalLinks =
-            List.map proposalLink proposals
+            List.map proposalLink proposals 
 
         country =
             case ISO3166.countryName presenter.country of
@@ -47,12 +43,14 @@ presenterCard model presenter =
 
                 Nothing ->
                     presenter.country
+
+        title =
+            Card.title []
+                [ Card.head [] [ text presenter.name ]
+                , Card.subhead [] [ text country ]
+                ]
+
+        content =
+            title :: proposalLinks
     in
-    Card.view []
-        ([ Card.title []
-            [ Card.head [] [ text presenter.name ]
-            , Card.subhead [] [ text country ]
-            ]
-         ]
-            ++ proposalLinks
-        )
+    Card.view [] content

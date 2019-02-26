@@ -1,4 +1,4 @@
-module ACCUSchedule.Types exposing (..)
+module ACCUSchedule.Types exposing (Presenter, PresenterId, Proposal, ProposalId)
 
 import ACCUSchedule.Types.Days exposing (Day)
 import ACCUSchedule.Types.QuickieSlots exposing (QuickieSlot)
@@ -6,9 +6,9 @@ import ACCUSchedule.Types.Rooms exposing (Room)
 import ACCUSchedule.Types.Sessions exposing (Session)
 
 
-type Track
-    = CppTrack
-    | OtherTrack
+-- type Track
+--     = CppTrack
+--     OtherTrack
 
 
 type alias PresenterId =

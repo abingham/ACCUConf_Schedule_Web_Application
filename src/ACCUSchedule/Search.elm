@@ -1,7 +1,7 @@
 module ACCUSchedule.Search exposing (search)
 
 import ACCUSchedule.Model exposing (Model, presenters)
-import ACCUSchedule.Types exposing (Presenter, Proposal)
+import ACCUSchedule.Types exposing (Proposal)
 
 
 lcontains : String -> String -> Bool

@@ -1,14 +1,13 @@
 module ACCUSchedule exposing (Flags, main, subscriptions)
 
 import ACCUSchedule.Comms as Comms
-import ACCUSchedule.Model exposing (..)
-import ACCUSchedule.Msg exposing (..)
+import ACCUSchedule.Model exposing (Model, initialModel)
+import ACCUSchedule.Msg exposing (Msg(..))
 import ACCUSchedule.Types exposing (ProposalId)
 import ACCUSchedule.Update exposing (update)
 import ACCUSchedule.View exposing (view)
 import Browser
 import Browser.Events
-import Element
 
 
 type alias Flags =
@@ -43,6 +42,6 @@ main =
 
 
 subscriptions : Model -> Sub Msg
-subscriptions model =
+subscriptions _ =
     Browser.Events.onResize <|
         \width height -> WindowResized { height = height, width = width }
