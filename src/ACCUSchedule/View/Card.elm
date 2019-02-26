@@ -15,8 +15,9 @@ withDefaultAttrs elemType defaults attrs =
 
 view : List (Attribute Msg.Msg) -> List (Element Msg.Msg) -> Element Msg.Msg
 view =
+    -- TODO: this hardcoded 300 is a mess. Can we instead calculate something? Perhaps based on font size?
     withDefaultAttrs column
-        [ width fill
+        [ width (px 300)
         , Element.Border.width 1
         , Element.Border.color Theme.lightGray
         ]
@@ -26,8 +27,8 @@ title : List (Attribute Msg.Msg) -> List (Element Msg.Msg) -> Element Msg.Msg
 title =
     withDefaultAttrs column
         [ width fill
-        , spacing 5
-        , padding 10
+        , spacing 10 
+        , padding 20
         , Element.Background.color Theme.accent
         , Element.Font.color Theme.white
         ]
@@ -35,7 +36,7 @@ title =
 
 head : List (Attribute Msg.Msg) -> List (Element Msg.Msg) -> Element Msg.Msg
 head =
-    withDefaultAttrs row [ width fill, Element.Font.bold ]
+    withDefaultAttrs row [ width fill, Element.Font.size (Theme.fontSize 2) ]
 
 
 subhead : List (Attribute Msg.Msg) -> List (Element Msg.Msg) -> Element Msg.Msg
@@ -87,8 +88,7 @@ deck windowSize cards =
         chunks =
             intoChunks chunkSize cards
 
-        -- TODO: this hardcoded 300 is a mess. Can we instead calculate something?
         columns =
-            List.map (column [ alignTop, spacing 10, width (px 300) ]) chunks
+            List.map (column [ alignTop, spacing 10 ]) chunks
     in
     row [ padding 10, spacing 10, centerX ] columns

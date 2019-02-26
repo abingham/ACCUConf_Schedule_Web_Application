@@ -2,12 +2,12 @@ module ACCUSchedule.View exposing (view)
 
 -- import ACCUSchedule.View.Theme as Theme
 -- import List.Extra exposing (stableSortWith)
-
 -- import ACCUSchedule.Asciidoc as Asciidoc
+-- import ACCUSchedule.Search as Search
+
 import ACCUSchedule.Model as Model
 import ACCUSchedule.Msg as Msg
 import ACCUSchedule.Routing as Routing
--- import ACCUSchedule.Search as Search
 import ACCUSchedule.Types as Types
 import ACCUSchedule.Types.Days as Days
 import ACCUSchedule.Types.QuickieSlots as QuickieSlots
@@ -18,7 +18,7 @@ import ACCUSchedule.View.PresenterCard exposing (presenterCard)
 import ACCUSchedule.View.ProposalCard exposing (proposalCard)
 import ACCUSchedule.View.Theme as Theme
 import Browser
-import Element exposing (centerX, Element, alignRight, column, fill, height, image, link, padding, px, row, shrink, spacing, text, width)
+import Element exposing (Element, alignLeft, alignRight, centerX, column, el, fill, fillPortion, height, image, link, padding, paragraph, px, row, shrink, spacing, text, width)
 import Element.Background
 import Element.Font exposing (light)
 import List exposing (append)
@@ -27,13 +27,9 @@ import List exposing (append)
 
 -- import Html exposing (Html, a, br, div, h1, img, p)
 -- import Html.Attributes exposing (height, href, src)
-
-
 -- proposalCardGroup : Int
 -- proposalCardGroup =
 --     0
-
-
 -- searchFieldControlGroup : Int
 -- searchFieldControlGroup =
 --     2
@@ -68,46 +64,58 @@ findPresenter model id =
 --         ]
 --         elems
 
+
 sessionView : Model.Model -> List Types.Proposal -> Sessions.Session -> Element.Element Msg.Msg
 sessionView model props session =
     let
         room =
             .room >> Rooms.ordinal
+
         compareRooms p1 p2 =
             compare (room p1) (room p2)
+
         compareSlots p1 p2 =
             case ( p1.quickieSlot, p2.quickieSlot ) of
                 ( Nothing, Nothing ) ->
                     EQ
+
                 ( Nothing, _ ) ->
                     LT
+
                 ( _, Nothing ) ->
                     GT
+
                 ( Just s1, Just s2 ) ->
                     compare (QuickieSlots.ordinal s1) (QuickieSlots.ordinal s2)
+
         proposals =
             List.filter (.session >> (==) session) props
                 |> List.sortWith compareSlots
                 |> List.sortWith compareRooms
     in
-        case List.head proposals of
-            Nothing ->
-                 row [] []
-            Just prop ->
-                let
-                    s =
-                        Sessions.toString prop.session
-                    d =
-                        Days.toString prop.day
-                    label =
-                        d ++ ", " ++ s
-                    cards =
-                        List.map (proposalCard model) proposals
-                in
-                column []
+    case List.head proposals of
+        Nothing ->
+            row [] []
+
+        Just prop ->
+            let
+                s =
+                    Sessions.toString prop.session
+
+                d =
+                    Days.toString prop.day
+
+                label =
+                    d ++ ", " ++ s
+
+                cards =
+                    List.map (proposalCard model) proposals
+            in
+            column []
                 [ text label
                 , deck model.view.windowSize cards
                 ]
+
 
 {-| Display all proposals for a particular day.
 -}
@@ -116,19 +124,24 @@ dayView model proposals day =
     let
         props =
             List.filter (.day >> (==) day) proposals
+
         sview =
             sessionView model props
     in
-        List.map
-            sview
+    List.map
+        sview
         Sessions.conferenceSessions
-        |> column [centerX]
+        |> column [ centerX ]
+
 
 {-| Display all "bookmarked" proposals, i.e. the users personal agenda.
 -}
 agendaView : Model.Model -> Element.Element Msg.Msg
 agendaView model =
     text "agenda view"
+
+
+
 --     -- let
 --     props =
 --         List.filter (\p -> List.member p.id model.bookmarks) model.proposals
@@ -150,12 +163,26 @@ agendaView model =
 --         ]
 -- in
 --     List.concatMap dview Days.conferenceDays
+
+
 {-| Display a single proposal. This includes all of the details of the proposal,
 including the full text of the abstract.
 -}
 proposalView : Model.Model -> Types.Proposal -> Element.Element Msg.Msg
 proposalView model proposal =
-    text "proposal view"
+    row []
+        [ column [ width (fillPortion 1) ] []
+        , column [ width (fillPortion 3) ]
+            [ paragraph []
+                [ el [ alignLeft, padding 5 ] (proposalCard model proposal)
+                , text proposal.summary
+                ]
+            ]
+        , column [ width (fillPortion 1) ] []
+        ]
+
+
+
 -- let
 --     room =
 --         Rooms.toString proposal.room
@@ -181,11 +208,16 @@ proposalView model proposal =
 --             ]
 --             [ Asciidoc.toHtml [] proposal.summary ]
 --         ]
+
+
 {-| Display a single presenter
 -}
 presenterView : Model.Model -> Types.Presenter -> Element.Element Msg.Msg
 presenterView model presenter =
     text "presenter view"
+
+
+
 -- Options.div
 --     [ Options.css "display" "flex"
 --     , Options.css "flex-flow" "row wrap"
@@ -203,23 +235,33 @@ presenterView model presenter =
 --         ]
 --         [ Markdown.toHtml [] presenter.bio ]
 --     ]
+
+
 presentersView : Model.Model -> Element.Element Msg.Msg
 presentersView model =
     model.presenters
         |> List.sortBy .name
         |> List.map (presenterCard model)
-        |> deck model.view.windowSize 
+        |> deck model.view.windowSize
+
 
 searchView : String -> Model.Model -> Element.Element Msg.Msg
 searchView term model =
     text "search view"
+
+
+
 --     -- Search.search term model
 --     |> List.map (proposalCard proposalCardGroup model)
 --     |> flowView
 
+
 notFoundView : Element.Element Msg.Msg
 notFoundView =
     text "view not found :("
+
+
+
 -- drawerLink : String -> String -> Html Msg.Msg
 -- drawerLink url linkText =
 --     text "drawer link"
@@ -254,29 +296,41 @@ header =
 
 body : Model.Model -> Element Msg.Msg
 body model =
-    case Routing.urlToRoute model.url of
-            Routing.Day day ->
-                dayView model model.proposals day
-            Routing.Proposal id ->
-                case findProposal model id of
-                    Just proposal ->
-                        proposalView model proposal
-                    Nothing ->
-                        notFoundView
-            Routing.Presenter id ->
-                case findPresenter model id of
-                    Just presenter ->
-                        presenterView model presenter
-                    Nothing ->
-                        notFoundView
-            Routing.Presenters ->
-                presentersView model
-            Routing.Agenda ->
-                agendaView model
-            Routing.Search term ->
-                searchView term model
-            _ ->
-                 notFoundView
+    let
+        content =
+            case Routing.urlToRoute model.url of
+                Routing.Day day ->
+                    dayView model model.proposals day
+
+                Routing.Proposal id ->
+                    case findProposal model id of
+                        Just proposal ->
+                            proposalView model proposal
+
+                        Nothing ->
+                            notFoundView
+
+                Routing.Presenter id ->
+                    case findPresenter model id of
+                        Just presenter ->
+                            presenterView model presenter
+
+                        Nothing ->
+                            notFoundView
+
+                Routing.Presenters ->
+                    presentersView model
+
+                Routing.Agenda ->
+                    agendaView model
+
+                Routing.Search term ->
+                    searchView term model
+
+                _ ->
+                    notFoundView
+    in
+    column [ padding 20, centerX ] [ content ]
 
 
 footerLink : List (Element.Attribute Msg.Msg) -> { url : String, label : Element.Element Msg.Msg } -> Element.Element Msg.Msg
@@ -286,6 +340,7 @@ footerLink =
 
 footer : Element Msg.Msg
 footer =
+    -- TODO: Items in footer should stack if the view is narrow. Can paragraph to this?
     row
         [ height shrink
         , Element.Background.color Theme.background
@@ -319,11 +374,12 @@ footer =
             }
         ]
 
+
 view : Model.Model -> Browser.Document Msg.Msg
 view model =
     { title = "ACCU 2019"
     , body =
-        [ Element.layout [Element.Font.size (Theme.fontSize 1)]
+        [ Element.layout [ Element.Font.size (Theme.fontSize 1) ]
             (column [ height fill, width fill ]
                 [ header
                 , body model
