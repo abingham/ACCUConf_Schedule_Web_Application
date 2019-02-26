@@ -8,7 +8,7 @@ import ACCUSchedule.Types.Days as Days
 import ACCUSchedule.Types.QuickieSlots as QuickieSlots
 import ACCUSchedule.Types.Rooms as Rooms
 import ACCUSchedule.Types.Sessions as Sessions
-import ACCUSchedule.View.Card exposing (deck)
+import ACCUSchedule.View.Card as Card
 import ACCUSchedule.View.PresenterCard exposing (presenterCard)
 import ACCUSchedule.View.ProposalCard exposing (proposalCard)
 import ACCUSchedule.View.Theme as Theme
@@ -87,7 +87,7 @@ sessionView model props session =
             in
             column []
                 [ text label
-                , deck model.view.windowSize cards
+                , Card.columns model.view.windowSize cards
                 ]
 
 
@@ -118,7 +118,7 @@ agendaView model =
         |> List.filter (\p -> List.member p.id model.bookmarks)
         >> List.sortBy (.session >> Sessions.ordinal)
         >> List.map (\p -> proposalCard model p)
-        >> deck model.view.windowSize
+        >> Card.columns model.view.windowSize
 
 
 {-| Display a single proposal. This includes all of the details of the proposal,
@@ -147,7 +147,7 @@ presentersView model =
     model.presenters
         |> List.sortBy .name
         |> List.map (presenterCard model)
-        |> deck model.view.windowSize
+        |> Card.columns model.view.windowSize
 
 
 searchView : String -> Model.Model -> Element.Element Msg.Msg
@@ -203,8 +203,14 @@ header =
                 , label = text "Presenters"
                 }
 
+        agendaLink =
+            link []
+                { url = Routing.agendaUrl
+                , label = text "Agenda"
+                }
+
         navLinks =
-            List.append dayLinks [ presentersLink ]
+            List.append dayLinks [ presentersLink, agendaLink ]
     in
     -- TODO: nav links
     row

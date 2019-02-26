@@ -1,4 +1,4 @@
-module ACCUSchedule.View.Card exposing (actions, deck, head, subhead, text, title, view)
+module ACCUSchedule.View.Card exposing (actions, columns, head, subhead, text, title, view)
 
 import ACCUSchedule.Msg as Msg
 import ACCUSchedule.View.Theme as Theme
@@ -73,8 +73,8 @@ intoChunks size xs =
         List.take size xs :: intoChunks size (List.drop size xs)
 
 
-deck : { width : Int, height : Int } -> List (Element Msg.Msg) -> Element Msg.Msg
-deck windowSize cards =
+columns : { width : Int, height : Int } -> List (Element Msg.Msg) -> Element Msg.Msg
+columns windowSize cards =
     let
         device =
             Element.classifyDevice windowSize
@@ -98,8 +98,6 @@ deck windowSize cards =
 
         chunks =
             intoChunks chunkSize cards
-
-        columns =
-            List.map (column [ alignTop, spacing 10 ]) chunks
     in
-    row [ padding 10, spacing 10, centerX ] columns
+    List.map (column [ alignTop, spacing 10 ]) chunks
+        |> row [ padding 10, spacing 10, centerX ]

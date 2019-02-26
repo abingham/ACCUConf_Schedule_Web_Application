@@ -1,4 +1,4 @@
-module ACCUSchedule.Routing exposing (Route(..), dayUrl, presenterUrl, presentersUrl, proposalUrl, urlToRoute)
+module ACCUSchedule.Routing exposing (Route(..), agendaUrl, dayUrl, presenterUrl, presentersUrl, proposalUrl, urlToRoute)
 
 import ACCUSchedule.Types as Types
 import ACCUSchedule.Types.Days as Days
@@ -46,6 +46,11 @@ presenterUrl presenterId =
 presentersUrl : String
 presentersUrl =
     "/presenters"
+
+
+agendaUrl : String
+agendaUrl =
+    "/agenda"
 
 
 
