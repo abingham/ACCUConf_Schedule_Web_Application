@@ -112,33 +112,15 @@ dayView model proposals day =
 -}
 agendaView : Model.Model -> Element.Element Msg.Msg
 agendaView model =
-    -- TODO
-    text "agenda view"
+    let
+        props =
+            List.filter (\p -> List.member p.id model.bookmarks) model.proposals
+                |> List.sortBy (.session >> Sessions.ordinal)
 
+        cards = List.map (\p -> proposalCard model p) props
 
-
---     -- let
---     props =
---         List.filter (\p -> List.member p.id model.bookmarks) model.proposals
---             |> List.sortBy (.session >> Sessions.ordinal)
---     dview day =
---         [ Chip.span
---             [ Options.css "margin-bottom" "5px"
---             , Elevation.e2
---             ]
---             [ Chip.content []
---                 [ Layout.link
---                     [ Layout.href <| Routing.dayUrl day ]
---                     [ text <| Days.toString day ]
---                 ]
---             ]
---         , List.filter (.day >> (==) day) props
---             |> List.map (proposalCard proposalCardGroup model)
---             |> flowView
---         ]
--- in
---     List.concatMap dview Days.conferenceDays
-
+    in
+        deck model.view.windowSize cards
 
 {-| Display a single proposal. This includes all of the details of the proposal,
 including the full text of the abstract.
@@ -209,20 +191,21 @@ header =
     let
         dayLink day =
             link []
-            {url = Routing.dayUrl day
-            , label = Days.toString day |> text
-            }
+                { url = Routing.dayUrl day
+                , label = Days.toString day |> text
+                }
 
-        dayLinks = 
+        dayLinks =
             List.map dayLink Days.conferenceDays
 
-        presentersLink = 
+        presentersLink =
             link []
-            { url = Routing.presentersUrl
-            , label = text "Presenters"
-            }
+                { url = Routing.presentersUrl
+                , label = text "Presenters"
+                }
 
-        navLinks = List.append dayLinks [presentersLink]
+        navLinks =
+            List.append dayLinks [ presentersLink ]
     in
     -- TODO: nav links
     row
@@ -232,13 +215,13 @@ header =
         ]
         [ column [ width (fillPortion 1) ] []
         , column [ width (fillPortion 3), spacing 10 ]
-            [ row [] [
-                image []
-                { src = "/img/accu-logo.png"
-                , description = "ACCU logo"
-                }
-            ]
-            , row [spacing 20] navLinks
+            [ row []
+                [ image []
+                    { src = "/img/accu-logo.png"
+                    , description = "ACCU logo"
+                    }
+                ]
+            , row [ spacing 20 ] navLinks
             ]
         , column [ width (fillPortion 1) ] []
         ]
