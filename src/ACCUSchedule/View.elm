@@ -112,6 +112,7 @@ dayView model proposals day =
 -}
 agendaView : Model.Model -> Element.Element Msg.Msg
 agendaView model =
+    -- TODO
     text "agenda view"
 
 
@@ -181,7 +182,7 @@ searchView term model =
 
 notFoundView : Element.Element Msg.Msg
 notFoundView =
-    text "view not found :("
+    text "page not found :("
 
 
 
@@ -205,16 +206,41 @@ notFoundView =
 
 header : Element Msg.Msg
 header =
+    let
+        dayLink day =
+            link []
+            {url = Routing.dayUrl day
+            , label = Days.toString day |> text
+            }
+
+        dayLinks = 
+            List.map dayLink Days.conferenceDays
+
+        presentersLink = 
+            link []
+            { url = Routing.presentersUrl
+            , label = text "Presenters"
+            }
+
+        navLinks = List.append dayLinks [presentersLink]
+    in
     -- TODO: nav links
     row
         [ Element.Background.color Theme.background
         , width fill
-        , padding 10
+        , padding 20
         ]
-        [ image []
-            { src = "/img/accu-logo.png"
-            , description = "ACCU logo"
-            }
+        [ column [ width (fillPortion 1) ] []
+        , column [ width (fillPortion 3), spacing 10 ]
+            [ row [] [
+                image []
+                { src = "/img/accu-logo.png"
+                , description = "ACCU logo"
+                }
+            ]
+            , row [spacing 20] navLinks
+            ]
+        , column [ width (fillPortion 1) ] []
         ]
 
 

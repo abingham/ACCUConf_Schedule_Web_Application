@@ -1,10 +1,10 @@
-
-module ACCUSchedule.Routing exposing (dayUrl, proposalUrl, presenterUrl, urlToRoute, Route(..))
+module ACCUSchedule.Routing exposing (Route(..), dayUrl, presenterUrl, presentersUrl, proposalUrl, urlToRoute)
 
 import ACCUSchedule.Types as Types
 import ACCUSchedule.Types.Days as Days
 import Url
-import Url.Parser exposing (custom, parse, Parser, (</>), int, map, oneOf, s, top)
+import Url.Parser exposing ((</>), Parser, custom, int, map, oneOf, parse, s, top)
+
 
 {-| All of the possible routes that we can display
 -}
@@ -24,7 +24,8 @@ dayUrl day =
         dayNum =
             Days.ordinal day |> String.fromInt
     in
-        "/day/" ++ dayNum
+    "/day/" ++ dayNum
+
 
 
 -- agendaUrl : String
@@ -36,13 +37,17 @@ proposalUrl : Types.ProposalId -> String
 proposalUrl proposalId =
     "/session/" ++ String.fromInt proposalId
 
+
 presenterUrl : Types.PresenterId -> String
 presenterUrl presenterId =
     "/presenter/" ++ String.fromInt presenterId
 
 
--- presentersUrl : String
--- presentersUrl = "#/presenters"
+presentersUrl : String
+presentersUrl =
+    "/presenters"
+
+
 
 -- searchUrl : String -> String
 -- searchUrl term =
@@ -57,13 +62,14 @@ parseDay path =
         matchDayOrd dayOrd rslt =
             if (dayOrd |> (Days.ordinal >> String.fromInt)) == path then
                 Just dayOrd
+
             else
                 rslt
     in
-        List.foldl
-            matchDayOrd
-            Nothing
-           Days.conferenceDays
+    List.foldl
+        matchDayOrd
+        Nothing
+        Days.conferenceDays
 
 
 {-| Location parser for days encoded as integers
@@ -73,8 +79,12 @@ dayParser =
     custom "DAY" parseDay
 
 
+
 --| Location parser for uri-encoded strings.
 --}
+
+
+
 -- uriEncoded : Parser (String -> b) b
 -- uriEncoded =
 --     let
@@ -82,7 +92,6 @@ dayParser =
 --             case Http.decodeUri x of
 --                 Just dx ->
 --                     Ok dx
-
 --                 Nothing ->
 --                     Err "Invalid URI-encoded string"
 --     in
@@ -98,6 +107,7 @@ matchers =
         , map Presenter (s "presenter" </> int)
         , map Presenters (s "presenters")
         , map Agenda (s "agenda")
+
         -- , map Search (s "search" </> uriEncoded)
         ]
 
