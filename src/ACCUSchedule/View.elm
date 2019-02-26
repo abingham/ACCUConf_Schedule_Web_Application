@@ -1,10 +1,5 @@
 module ACCUSchedule.View exposing (view)
 
--- import ACCUSchedule.View.Theme as Theme
--- import List.Extra exposing (stableSortWith)
--- import ACCUSchedule.Asciidoc as Asciidoc
--- import ACCUSchedule.Search as Search
-
 import ACCUSchedule.Model as Model
 import ACCUSchedule.Msg as Msg
 import ACCUSchedule.Routing as Routing
@@ -22,17 +17,6 @@ import Element exposing (Element, alignLeft, alignRight, centerX, column, el, fi
 import Element.Background
 import Element.Font exposing (light)
 import List exposing (append)
-
-
-
--- import Html exposing (Html, a, br, div, h1, img, p)
--- import Html.Attributes exposing (height, href, src)
--- proposalCardGroup : Int
--- proposalCardGroup =
---     0
--- searchFieldControlGroup : Int
--- searchFieldControlGroup =
---     2
 
 
 {-| Find a proposal based on a string representation of its id.
@@ -53,16 +37,6 @@ This is just convenience for parsing the route.
 findPresenter : Model.Model -> Types.PresenterId -> Maybe Types.Presenter
 findPresenter model id =
     List.filter (\p -> p.id == id) model.presenters |> List.head
-
-
-
--- flowView : List (Html Msg.Msg) -> Html Msg.Msg
--- flowView elems =
---     Options.div
---         [ Options.css "display" "flex"
---         , Options.css "flex-flow" "row wrap"
---         ]
---         elems
 
 
 sessionView : Model.Model -> List Types.Proposal -> Sessions.Session -> Element.Element Msg.Msg
@@ -170,71 +144,20 @@ including the full text of the abstract.
 -}
 proposalView : Model.Model -> Types.Proposal -> Element.Element Msg.Msg
 proposalView model proposal =
-    row []
-        [ column [ width (fillPortion 1) ] []
-        , column [ width (fillPortion 3) ]
-            [ paragraph []
-                [ el [ alignLeft, padding 5 ] (proposalCard model proposal)
-                , text proposal.summary
-                ]
-            ]
-        , column [ width (fillPortion 1) ] []
+    paragraph []
+        [ el [ alignLeft, padding 5 ] (proposalCard model proposal)
+        , text proposal.summary -- TODO: asciidoc
         ]
-
-
-
--- let
---     room =
---         Rooms.toString proposal.room
---     session =
---         Sessions.toString proposal.session
---     location =
---         session ++ ", " ++ room
--- in
---     Options.div
---         [ Options.css "display" "flex"
---         , Options.css "flex-flow" "row wrap"
---           -- , Options.css "justify" "center"
---         , Options.css "justify-content" "flex-start"
---         , Options.css "align-items" "flex-start"
---         ]
---         [ Options.styled p
---             []
---             [ proposalCard proposalCardGroup model proposal ]
---         , Options.styled p
---             [ Typo.body1
---             , Options.css "width" "30em"
---             , Options.css "margin-left" "10px"
---             ]
---             [ Asciidoc.toHtml [] proposal.summary ]
---         ]
 
 
 {-| Display a single presenter
 -}
 presenterView : Model.Model -> Types.Presenter -> Element.Element Msg.Msg
 presenterView model presenter =
-    text "presenter view"
-
-
-
--- Options.div
---     [ Options.css "display" "flex"
---     , Options.css "flex-flow" "row wrap"
---       -- , Options.css "justify" "center"
---     , Options.css "justify-content" "flex-start"
---     , Options.css "align-items" "flex-start"
---     ]
---     [ Options.styled p
---         []
---         [ presenterCard presenterCardGroup model presenter ]
---     , Options.styled p
---         [ Typo.body1
---         , Options.css "width" "30em"
---         , Options.css "margin-left" "10px"
---         ]
---         [ Markdown.toHtml [] presenter.bio ]
---     ]
+    paragraph []
+        [ el [ alignLeft, padding 5 ] (presenterCard model presenter)
+        , text presenter.bio -- TODO: Markdown / asciidoc?
+        ]
 
 
 presentersView : Model.Model -> Element.Element Msg.Msg
@@ -282,6 +205,7 @@ notFoundView =
 
 header : Element Msg.Msg
 header =
+    -- TODO: nav links
     row
         [ Element.Background.color Theme.background
         , width fill
@@ -330,7 +254,11 @@ body model =
                 _ ->
                     notFoundView
     in
-    column [ padding 20, centerX ] [ content ]
+    row [ width fill ]
+        [ column [ width (fillPortion 1) ] []
+        , column [ width (fillPortion 3), padding 20 ] [ content ]
+        , column [ width (fillPortion 1) ] []
+        ]
 
 
 footerLink : List (Element.Attribute Msg.Msg) -> { url : String, label : Element.Element Msg.Msg } -> Element.Element Msg.Msg
@@ -341,6 +269,7 @@ footerLink =
 footer : Element Msg.Msg
 footer =
     -- TODO: Items in footer should stack if the view is narrow. Can paragraph to this?
+    -- TODO: Sticky footer?
     row
         [ height shrink
         , Element.Background.color Theme.background
