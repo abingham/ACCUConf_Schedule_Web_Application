@@ -47,9 +47,13 @@ proposalCard model proposal =
                 , label = text p.name
                 }
 
-        presenterLinks =
+        presenterSubhead =
             Model.presenters model proposal
                 |> List.map presenterLink
+                |> List.intersperse (text ", ")
+                |> paragraph []
+                |> List.singleton
+                |> Card.subhead []
 
         proposalLink =
             Element.link []
@@ -67,28 +71,22 @@ proposalCard model proposal =
             Card.subhead [] [ paragraph [] [ text room ] ]
 
         title =
-            Card.title [] [ head, timeSubhead, roomSubhead ]
-
-        body =
-            List.map (\l -> Card.text [] [ l ]) presenterLinks
+            Card.title [] [ head, presenterSubhead, timeSubhead, roomSubhead ]
 
         bookmarkAction =
             if List.member proposal.id model.bookmarks then
-                image [onClick (Msg.ToggleBookmark proposal.id)]
+                image [ onClick (Msg.ToggleBookmark proposal.id) ]
                     { src = "/img/filled-heart.png"
                     , description = "Remove from agenda"
                     }
 
             else
-                image [onClick (Msg.ToggleBookmark proposal.id)]
+                image [ onClick (Msg.ToggleBookmark proposal.id) ]
                     { src = "/img/heart.png"
                     , description = "Add to agenda"
                     }
 
         actions =
             Card.actions [] [ bookmarkAction ]
-
-        content =
-            title :: body ++ [ actions ]
     in
-    Card.view [] content
+    Card.view [] [ title, actions ]
