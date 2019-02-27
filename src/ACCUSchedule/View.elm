@@ -13,7 +13,7 @@ import ACCUSchedule.View.PresenterCard exposing (presenterCard)
 import ACCUSchedule.View.ProposalCard exposing (proposalCard)
 import ACCUSchedule.View.Theme as Theme
 import Browser
-import Element exposing (Attribute, Element, alignLeft, alignRight, centerX, column, el, fill, fillPortion, height, image, link, padding, paragraph, px, row, shrink, spacing, text, width, wrappedRow)
+import Element exposing (Attribute, Element, alignLeft, alignRight, centerX, column, el, fill, fillPortion, height, image, link, padding, paddingXY, paragraph, px, row, shrink, spacing, text, width, wrappedRow)
 import Element.Background
 import Element.Font exposing (light)
 import List exposing (append)
@@ -214,29 +214,29 @@ header =
             List.map dayLink Days.conferenceDays
 
         presentersLink =
-            link []
+            link [ alignRight ]
                 { url = Routing.presentersUrl
                 , label = text "Presenters"
                 }
 
         agendaLink =
-            link []
+            link [ alignRight ]
                 { url = Routing.agendaUrl
-                , label = text "Agenda"
+                , label = text "Favorites"
                 }
 
         navLinks =
             List.append dayLinks [ presentersLink, agendaLink ]
     in
     bodyRow [ Element.Background.color Theme.background ]
-        [ column [ spacing 20, padding 20 ]
+        [ column [ width fill, spacing 20, paddingXY 0 20 ]
             [ row []
                 [ image []
                     { src = "/img/accu-logo.png"
                     , description = "ACCU logo"
                     }
                 ]
-            , wrappedRow [ spacing 20 ] navLinks
+            , wrappedRow [ width fill, spacing 20 ] navLinks
             ]
         ]
 
@@ -277,7 +277,7 @@ body model =
                 _ ->
                     notFoundView
     in
-    bodyRow [ padding 20 ] [ content ]
+    bodyRow [ paddingXY 0 20 ] [ content ]
 
 
 footerLink : List (Element.Attribute Msg.Msg) -> { url : String, label : Element.Element Msg.Msg } -> Element.Element Msg.Msg
@@ -290,7 +290,7 @@ footer =
     -- TODO: Items in footer should stack if the view is narrow. Can paragraph to this?
     -- TODO: Sticky footer?
     bodyRow [ Element.Background.color Theme.background ]
-        [ wrappedRow [ padding 10, spacing 20, width fill ]
+        [ wrappedRow [ paddingXY 0 10, spacing 20, width fill ]
             [ text "ACCU 2019 Schedule"
             , footerLink []
                 { url = "https://conference.accu.org/"
@@ -329,122 +329,3 @@ view model =
     , body =
         [ Element.layout [ Element.Font.size (Theme.fontSize 1) ] content ]
     }
-
-
-
--- let
---     main =
---         case model.location of
---             Routing.Day day ->
---                 dayView model model.proposals day
---             Routing.Proposal id ->
---                 case findProposal model id of
---                     Just proposal ->
---                         [ proposalView model proposal ]
---                     Nothing ->
---                         [ notFoundView ]
---             Routing.Presenter id ->
---                 case findPresenter model id of
---                     Just presenter ->
---                         [ presenterView model presenter ]
---                     Nothing ->
---                         [ notFoundView ]
---             Routing.Presenters ->
---                 [ presentersView model ]
---             Routing.Agenda ->
---                 agendaView model
---             Routing.Search term ->
---                 [ searchView term model ]
---             _ ->
---                 [ notFoundView ]
---     pageName =
---         case model.location of
---             Routing.Day day ->
---                 Days.toString day
---             Routing.Proposal id ->
---                 ""
---             Routing.Presenter id ->
---                 ""
---             Routing.Presenters ->
---                 "Presenters"
---             Routing.Agenda ->
---                 "Your agenda"
---             Routing.Search term ->
---                 ""
---             _ ->
---                 ""
---     searchString =
---         case model.location of
---             Routing.Search x ->
---                 x
---             _ ->
---                 ""
--- in
---     div
---         []
---         [ Layout.render Msg.Mdl
---             model.mdl
---             [ Layout.fixedHeader
---             ]
---             { header =
---                 [ Layout.row
---                     [ Color.background Theme.background ]
---                     [ img [ src "./static/img/accu-logo.png", height 50 ] []
---                     , Layout.spacer
---                     , Layout.title
---                         [ Typo.title ]
---                         [ text pageName ]
---                     , Layout.spacer
---                     , Layout.title
---                         [ Typo.title
---                         , Options.onInput Msg.VisitSearch
---                         ]
---                         [ Textfield.render Msg.Mdl
---                             [ searchFieldControlGroup ]
---                             model.mdl
---                             [ Textfield.label "Search"
---                             , Textfield.floatingLabel
---                             , Textfield.value searchString
---                             , Textfield.expandable "search-field"
---                             , Textfield.expandableIcon "search"
---                             ]
---                             []
---                         ]
---                     ]
---                 ]
---             , drawer =
---                 [ Layout.title [] [ text "ACCU 2018" ]
---                 , Layout.navigation [] <|
---                     List.concat
---                         [ List.map
---                             dayLink
---                             Days.conferenceDays
---                         , [ Html.hr [] []
---                           , drawerLink Routing.presentersUrl "Presenters"
---                           , Html.hr [] []
---                           , agendaLink
---                           , Layout.spacer
---                           , Layout.link
---                                 [ Options.onClick <|
---                                     Msg.Batch
---                                         [ Msg.FetchData
---                                         , Layout.toggleDrawer Msg.Mdl
---                                         ]
---                                 ]
---                                 [ text "Refresh"
---                                 ]
---                           ]
---                         ]
---                 ]
---             , tabs = ( [], [] )
---             , main =
---                 [ Options.styled div
---                     [ Options.css "margin-left" "10px"
---                     , Options.css "margin-top" "10px"
---                     , Options.css "margin-bottom" "10px"
---                     ]
---                     main
---                 , footer
---                 ]
---             }
---         ]
