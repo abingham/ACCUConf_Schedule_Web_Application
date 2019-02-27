@@ -3,6 +3,7 @@ module ACCUSchedule.View exposing (view)
 import ACCUSchedule.Model as Model
 import ACCUSchedule.Msg as Msg
 import ACCUSchedule.Routing as Routing
+import ACCUSchedule.Search as Search
 import ACCUSchedule.Types as Types
 import ACCUSchedule.Types.Days as Days
 import ACCUSchedule.Types.QuickieSlots as QuickieSlots
@@ -150,39 +151,25 @@ presentersView model =
         |> Card.columns model.view.windowSize
 
 
-searchView : String -> Model.Model -> Element.Element Msg.Msg
+searchView : Maybe String -> Model.Model -> Element.Element Msg.Msg
 searchView term model =
-    text "search view"
+    let
+        proposals =
+            case term of
+                Just t ->
+                    Search.search t model
 
-
-
---     -- Search.search term model
---     |> List.map (proposalCard proposalCardGroup model)
---     |> flowView
+                Nothing ->
+                    model.proposals
+    in
+    proposals
+        |> List.map (proposalCard model)
+        |> Card.columns model.view.windowSize
 
 
 notFoundView : Element.Element Msg.Msg
 notFoundView =
     text "page not found :("
-
-
-
--- drawerLink : String -> String -> Html Msg.Msg
--- drawerLink url linkText =
---     text "drawer link"
---     -- Layout.link
---     [ Layout.href url
---     , Options.onClick <| Layout.toggleDrawer Msg.Mdl
---     ]
---     [ text linkText ]
--- dayLink : Days.Day -> Html Msg.Msg
--- dayLink day =
---     text "day link"
---     -- drawerLink (Routing.dayUrl day) (Days.toString day)
--- agendaLink : Html Msg.Msg
--- agendaLink =
---     text "agenda link"
---     -- drawerLink Routing.agendaUrl "Your agenda"
 
 
 bodyRow : List (Attribute Msg.Msg) -> List (Element Msg.Msg) -> Element Msg.Msg

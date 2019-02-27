@@ -3,7 +3,8 @@ module ACCUSchedule.Routing exposing (Route(..), agendaUrl, dayUrl, presenterUrl
 import ACCUSchedule.Types as Types
 import ACCUSchedule.Types.Days as Days
 import Url
-import Url.Parser exposing ((</>), Parser, custom, int, map, oneOf, parse, s, top)
+import Url.Parser exposing ((</>), (<?>), Parser, custom, int, map, oneOf, parse, s, top)
+import Url.Parser.Query as Query
 
 
 {-| All of the possible routes that we can display
@@ -14,7 +15,7 @@ type Route
     | Presenter Types.PresenterId
     | Presenters
     | Agenda
-    | Search String
+    | Search (Maybe String)
     | NotFound
 
 
@@ -112,8 +113,7 @@ matchers =
         , map Presenter (s "presenter" </> int)
         , map Presenters (s "presenters")
         , map Agenda (s "agenda")
-
-        -- , map Search (s "search" </> uriEncoded)
+        , map Search (s "search" <?> Query.string "term")
         ]
 
 
