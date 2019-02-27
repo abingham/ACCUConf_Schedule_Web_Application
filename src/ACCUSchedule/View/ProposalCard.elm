@@ -9,8 +9,11 @@ import ACCUSchedule.Types.QuickieSlots as QuickieSlots
 import ACCUSchedule.Types.Rooms as Rooms
 import ACCUSchedule.Types.Sessions as Sessions
 import ACCUSchedule.View.Card as Card
-import Element exposing (image, paragraph, text)
+import ACCUSchedule.View.Icon as Icon
+import Element exposing (el, htmlAttribute, image, paragraph, text)
 import Element.Events exposing (onClick)
+import Element.Font as Font
+import Html.Attributes exposing (style)
 
 
 {-| A card-view of a single proposal. This displays the title, presenters,
@@ -74,17 +77,19 @@ proposalCard model proposal =
             Card.title [] [ head, presenterSubhead, timeSubhead, roomSubhead ]
 
         bookmarkAction =
-            if List.member proposal.id model.bookmarks then
-                image [ onClick (Msg.ToggleBookmark proposal.id) ]
-                    { src = "/img/filled-heart.png"
-                    , description = "Remove from agenda"
-                    }
+            let
+                name =
+                    if List.member proposal.id model.bookmarks then
+                        "favorite"
 
-            else
-                image [ onClick (Msg.ToggleBookmark proposal.id) ]
-                    { src = "/img/heart.png"
-                    , description = "Add to agenda"
-                    }
+                    else
+                        "favorite_border"
+            in
+            Icon.icon
+                [ onClick (Msg.ToggleBookmark proposal.id)
+                , htmlAttribute (style "cursor" "pointer")
+                ]
+                name
 
         actions =
             Card.actions [] [ bookmarkAction ]
