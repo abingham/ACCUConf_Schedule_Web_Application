@@ -13,7 +13,7 @@ import ACCUSchedule.View.PresenterCard exposing (presenterCard)
 import ACCUSchedule.View.ProposalCard exposing (proposalCard)
 import ACCUSchedule.View.Theme as Theme
 import Browser
-import Element exposing (Element, alignLeft, alignRight, centerX, column, el, fill, fillPortion, height, image, link, padding, paragraph, px, row, shrink, spacing, text, width)
+import Element exposing (Attribute, Element, alignLeft, alignRight, centerX, column, el, fill, fillPortion, height, image, link, padding, paragraph, px, row, shrink, spacing, text, width, wrappedRow)
 import Element.Background
 import Element.Font exposing (light)
 import List exposing (append)
@@ -185,6 +185,22 @@ notFoundView =
 --     -- drawerLink Routing.agendaUrl "Your agenda"
 
 
+bodyRow : List (Attribute Msg.Msg) -> List (Element Msg.Msg) -> Element Msg.Msg
+bodyRow attrs center =
+    let
+        defaultAttrs =
+            [ width fill ]
+
+        fullAttrs =
+            defaultAttrs ++ attrs
+    in
+    row fullAttrs
+        [ column [ width (fillPortion 2) ] []
+        , column [ width (fillPortion 8), height fill ] center
+        , column [ width (fillPortion 2) ] []
+        ]
+
+
 header : Element Msg.Msg
 header =
     let
@@ -212,23 +228,16 @@ header =
         navLinks =
             List.append dayLinks [ presentersLink, agendaLink ]
     in
-    -- TODO: nav links
-    row
-        [ Element.Background.color Theme.background
-        , width fill
-        , padding 20
-        ]
-        [ column [ width (fillPortion 1) ] []
-        , column [ width (fillPortion 3), spacing 10 ]
+    bodyRow [ Element.Background.color Theme.background ]
+        [ column [ spacing 20, padding 20 ]
             [ row []
                 [ image []
                     { src = "/img/accu-logo.png"
                     , description = "ACCU logo"
                     }
                 ]
-            , row [ spacing 20 ] navLinks
+            , wrappedRow [ spacing 20 ] navLinks
             ]
-        , column [ width (fillPortion 1) ] []
         ]
 
 
@@ -268,11 +277,7 @@ body model =
                 _ ->
                     notFoundView
     in
-    row [ width fill ]
-        [ column [ width (fillPortion 1) ] []
-        , column [ width (fillPortion 3), padding 20 ] [ content ]
-        , column [ width (fillPortion 1) ] []
-        ]
+    bodyRow [ padding 20 ] [ content ]
 
 
 footerLink : List (Element.Attribute Msg.Msg) -> { url : String, label : Element.Element Msg.Msg } -> Element.Element Msg.Msg
@@ -284,52 +289,45 @@ footer : Element Msg.Msg
 footer =
     -- TODO: Items in footer should stack if the view is narrow. Can paragraph to this?
     -- TODO: Sticky footer?
-    row
-        [ height shrink
-        , Element.Background.color Theme.background
-        , width fill
-        , padding 10
-        , spacing 20
-        ]
-        [ text "ACCU 2019 Schedule"
-        , footerLink []
-            { url = "https://conference.accu.org/"
-            , label = text "Conference"
-            }
-        , footerLink [ spacing 5 ]
-            { url = "https://github.com/ACCUConf/Schedule_Web_Application"
-            , label =
-                image [ height (px 32) ]
-                    { src = "/img/GitHub-Mark-Light-32px.png"
-                    , description = "Github project"
-                    }
-            }
-        , footerLink [ alignRight ]
-            { url = "https://sixty-north.com"
-            , label =
-                row [ spacing 5 ]
-                    [ text "© 2017-2019 Sixty North AS"
-                    , image [ height (px 32) ]
-                        { src = "/img/sixty-north-logo.png"
-                        , description = "Sixty North AS"
+    bodyRow [ Element.Background.color Theme.background ]
+        [ wrappedRow [ padding 10, spacing 20, width fill ]
+            [ text "ACCU 2019 Schedule"
+            , footerLink []
+                { url = "https://conference.accu.org/"
+                , label = text "Conference"
+                }
+            , footerLink [ spacing 5 ]
+                { url = "https://github.com/ACCUConf/Schedule_Web_Application"
+                , label =
+                    image [ height (px 32) ]
+                        { src = "/img/GitHub-Mark-Light-32px.png"
+                        , description = "Github project"
                         }
-                    ]
-            }
+                }
+            , footerLink [ alignRight ]
+                { url = "https://sixty-north.com"
+                , label =
+                    row [ spacing 5 ]
+                        [ text "© 2017-2019 Sixty North AS"
+                        , image [ height (px 32) ]
+                            { src = "/img/sixty-north-logo.png"
+                            , description = "Sixty North AS"
+                            }
+                        ]
+                }
+            ]
         ]
 
 
 view : Model.Model -> Browser.Document Msg.Msg
 view model =
+    let
+        content =
+            column [ width fill, height fill ] [ header, body model, footer ]
+    in
     { title = "ACCU 2019"
     , body =
-        [ Element.layout [ Element.Font.size (Theme.fontSize 1) ]
-            (column [ height fill, width fill ]
-                [ header
-                , body model
-                , footer
-                ]
-            )
-        ]
+        [ Element.layout [ Element.Font.size (Theme.fontSize 1) ] content ]
     }
 
 
