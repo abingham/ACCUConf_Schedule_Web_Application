@@ -17,6 +17,7 @@ import Browser
 import Element exposing (Attribute, Element, alignLeft, alignRight, centerX, column, el, fill, fillPortion, height, image, link, padding, paddingXY, paragraph, px, row, shrink, spacing, text, width, wrappedRow)
 import Element.Background
 import Element.Font exposing (light)
+import Element.Input exposing (labelHidden, placeholder, search)
 import List exposing (append)
 
 
@@ -151,20 +152,25 @@ presentersView model =
         |> Card.columns model.view.windowSize
 
 
-searchView : Maybe String -> Model.Model -> Element.Element Msg.Msg
+searchView : String -> Model.Model -> Element.Element Msg.Msg
 searchView term model =
     let
-        proposals =
-            case term of
-                Just t ->
-                    Search.search t model
-
-                Nothing ->
-                    model.proposals
+        proposalCards =
+            Search.search term model
+                |> List.map (proposalCard model)
+                |> Card.columns model.view.windowSize
     in
-    proposals
-        |> List.map (proposalCard model)
-        |> Card.columns model.view.windowSize
+    column [ width fill ]
+        [ row [ width fill ]
+            [ search []
+                { onChange = Msg.SetSearchTerm
+                , text = term
+                , placeholder = Just (placeholder [] (text "Search proposals"))
+                , label = labelHidden "Search proposals"
+                }
+            ]
+        , row [ centerX ] [ proposalCards ]
+        ]
 
 
 notFoundView : Element.Element Msg.Msg
@@ -212,8 +218,14 @@ header =
                 , label = text "Favorites"
                 }
 
+        searchLink =
+            link [ alignRight ]
+                { url = Routing.searchUrl ""
+                , label = text "Search"
+                }
+
         navLinks =
-            List.append dayLinks [ presentersLink, agendaLink ]
+            List.append dayLinks [ presentersLink, agendaLink, searchLink ]
     in
     bodyRow [ Element.Background.color Theme.background ]
         [ column [ width fill, spacing 20, paddingXY 0 20 ]
@@ -259,7 +271,12 @@ body model =
                     agendaView model
 
                 Routing.Search term ->
-                    searchView term model
+                    case term of
+                        Just t ->
+                            searchView t model
+
+                        Nothing ->
+                            searchView "" model
 
                 _ ->
                     notFoundView

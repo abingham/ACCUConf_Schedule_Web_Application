@@ -13,6 +13,7 @@ type Msg
     | ToggleBookmark Types.ProposalId
     | RaiseProposal Bool Types.ProposalId
     | RaisePresenter Bool Types.PresenterId
+    | SetSearchTerm String
     | LinkClicked Browser.UrlRequest
     | UrlChange Url.Url
     | WindowResized { width : Int, height : Int }

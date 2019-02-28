@@ -5,6 +5,7 @@ module ACCUSchedule.Update exposing (update)
 import ACCUSchedule.Comms as Comms
 import ACCUSchedule.Model exposing (Model, raisePresenter, raiseProposal)
 import ACCUSchedule.Msg as Msg
+import ACCUSchedule.Routing as Routing
 import ACCUSchedule.Storage as Storage
 import Browser
 import Browser.Navigation as Nav
@@ -53,6 +54,9 @@ update msg model =
         Msg.RaisePresenter raised id ->
             singleton model
                 |> map (raisePresenter raised id)
+
+        Msg.SetSearchTerm term ->
+            ( model, Nav.replaceUrl model.key (Routing.searchUrl term) )
 
         -- TODO [ Dispatch.forward msgs ]
         Msg.LinkClicked urlRequest ->

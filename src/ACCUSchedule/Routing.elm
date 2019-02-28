@@ -1,8 +1,9 @@
-module ACCUSchedule.Routing exposing (Route(..), agendaUrl, dayUrl, presenterUrl, presentersUrl, proposalUrl, urlToRoute)
+module ACCUSchedule.Routing exposing (Route(..), agendaUrl, dayUrl, presenterUrl, presentersUrl, proposalUrl, searchUrl, urlToRoute)
 
 import ACCUSchedule.Types as Types
 import ACCUSchedule.Types.Days as Days
 import Url
+import Url.Builder exposing (absolute, string)
 import Url.Parser exposing ((</>), (<?>), Parser, custom, int, map, oneOf, parse, s, top)
 import Url.Parser.Query as Query
 
@@ -25,39 +26,33 @@ dayUrl day =
         dayNum =
             Days.ordinal day |> String.fromInt
     in
-    "/day/" ++ dayNum
-
-
-
--- agendaUrl : String
--- agendaUrl =
---     "#/agenda"
+    absolute [ "day", dayNum ] []
 
 
 proposalUrl : Types.ProposalId -> String
 proposalUrl proposalId =
-    "/session/" ++ String.fromInt proposalId
+    absolute [ "session", String.fromInt proposalId ] []
 
 
 presenterUrl : Types.PresenterId -> String
 presenterUrl presenterId =
-    "/presenter/" ++ String.fromInt presenterId
+    absolute [ "presenter", String.fromInt presenterId ] []
 
 
 presentersUrl : String
 presentersUrl =
-    "/presenters"
+    absolute [ "presenters" ] []
 
 
 agendaUrl : String
 agendaUrl =
-    "/agenda"
+    absolute [ "agenda" ] []
 
 
-
--- searchUrl : String -> String
--- searchUrl term =
---     "#/search/" ++ (Http.encodeUri term)
+searchUrl : String -> String
+searchUrl term =
+    absolute [ "search" ]
+        [ string "term" term ]
 
 
 {-| Parse the string form of a day ordinal to a result.
@@ -83,25 +78,6 @@ parseDay path =
 dayParser : Parser (Days.Day -> b) b
 dayParser =
     custom "DAY" parseDay
-
-
-
---| Location parser for uri-encoded strings.
---}
-
-
-
--- uriEncoded : Parser (String -> b) b
--- uriEncoded =
---     let
---         decode x =
---             case Http.decodeUri x of
---                 Just dx ->
---                     Ok dx
---                 Nothing ->
---                     Err "Invalid URI-encoded string"
---     in
---         custom "URI_ENCODED" decode
 
 
 matchers : Parser (Route -> a) a
