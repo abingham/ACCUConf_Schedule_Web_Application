@@ -11,7 +11,7 @@ import ACCUSchedule.Types.Rooms as Rooms
 import ACCUSchedule.Types.Sessions as Sessions
 import ACCUSchedule.View.Card as Card
 import ACCUSchedule.View.PresenterCard exposing (presenterCard)
-import ACCUSchedule.View.ProposalCard exposing (proposalCard)
+import ACCUSchedule.View.Proposal exposing (proposalCard, proposalView)
 import ACCUSchedule.View.Theme as Theme
 import Browser
 import Dict
@@ -120,26 +120,6 @@ agendaView model =
         >> List.sortBy (.session >> Sessions.ordinal)
         >> List.map (\p -> proposalCard model p)
         >> Card.columns model.view.windowSize
-
-
-{-| Display a single proposal. This includes all of the details of the proposal,
-including the full text of the abstract.
--}
-proposalView : Model.Model -> Types.Proposal -> Element.Element Msg.Msg
-proposalView model proposal =
-    let
-        summary =
-            case Dict.get proposal.id model.view.proposalHtml of
-                Just html ->
-                    Element.html html
-
-                Nothing ->
-                    text proposal.summary
-    in
-    paragraph []
-        [ el [ alignLeft, padding 5 ] (proposalCard model proposal)
-        , summary
-        ]
 
 
 {-| Display a single presenter

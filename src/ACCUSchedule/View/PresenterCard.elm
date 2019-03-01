@@ -9,6 +9,7 @@ import ACCUSchedule.Msg as Msg
 import ACCUSchedule.Routing as Routing
 import ACCUSchedule.Types as Types
 import ACCUSchedule.View.Card as Card
+import ACCUSchedule.View.Proposal exposing (proposalLink)
 import Element exposing (Element, fill, link, paragraph, text, width)
 
 
@@ -27,11 +28,7 @@ presenterCard model presenter =
 
         proposalLink p =
             Card.text []
-                [ Element.link []
-                    { url = Routing.proposalUrl p.id
-                    , label = paragraph [] [ text p.title ]
-                    }
-                ]
+                [ proposalLink p ]
 
         proposalLinks =
             List.map proposalLink proposals
@@ -45,7 +42,7 @@ presenterCard model presenter =
                     presenter.country
 
         presenterLink =
-            Element.link [width fill]
+            Element.link [ width fill ]
                 { url = Routing.presenterUrl presenter.id
                 , label = paragraph [] [ text presenter.name ]
                 }

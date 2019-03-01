@@ -28,22 +28,21 @@ update msg model =
                 |> command (Comms.fetchPresenters model)
 
         Msg.ProposalsResult (Ok proposals) ->
-            let
-                makeRequest p =
-                    Json.Encode.object
-                        [ ( "raw_text", Json.Encode.string p.summary )
-                        , ( "id", Json.Encode.int p.id )
-                        ]
-                        |> Asciidoc.convertAsciidoc
+            -- let
+            --     makeRequest p =
+            --         Json.Encode.object
+            --             [ ( "raw_text", Json.Encode.string p.summary )
+            --             , ( "id", Json.Encode.int p.id )
+            --             ]
+            --             |> Asciidoc.convertAsciidoc
+            --     conversions =
+            --         proposals
+            --             |> List.map makeRequest
+            --             |> batch
+            -- in
+            ( { model | proposals = proposals }, Cmd.none )
 
-                conversions =
-                    proposals
-                        |> List.map makeRequest
-                        |> batch
-            in
-            singleton { model | proposals = proposals }
-                |> command conversions
-
+        -- |> command conversions
         Msg.ProposalsResult (Err _) ->
             ( model, Cmd.none )
 
@@ -52,6 +51,17 @@ update msg model =
 
         Msg.PresentersResult (Err _) ->
             ( model, Cmd.none )
+
+        Msg.RenderAsciidoc proposalId summary ->
+            let
+                cmd =
+                    Json.Encode.object
+                        [ ( "raw_text", Json.Encode.string summary )
+                        , ( "id", Json.Encode.int proposalId )
+                        ]
+                        |> Asciidoc.convertAsciidoc
+            in
+            ( model, cmd )
 
         Msg.AsciidocConverted value ->
             case Json.Decode.decodeValue asciidocConversionDecoder value of

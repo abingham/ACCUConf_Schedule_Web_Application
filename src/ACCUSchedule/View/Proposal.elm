@@ -1,4 +1,4 @@
-module ACCUSchedule.View.ProposalCard exposing (proposalCard)
+module ACCUSchedule.View.Proposal exposing (proposalCard, proposalLink, proposalView)
 
 import ACCUSchedule.Model as Model
 import ACCUSchedule.Msg as Msg
@@ -10,9 +10,38 @@ import ACCUSchedule.Types.Rooms as Rooms
 import ACCUSchedule.Types.Sessions as Sessions
 import ACCUSchedule.View.Card as Card
 import ACCUSchedule.View.Icon as Icon
-import Element exposing (htmlAttribute, paragraph, text)
+import Dict
+import Element exposing (alignLeft, el, htmlAttribute, padding, paragraph, text)
 import Element.Events exposing (onClick)
 import Html.Attributes exposing (style)
+
+
+{-| Display a single proposal. This includes all of the details of the proposal,
+including the full text of the abstract.
+-}
+proposalView : Model.Model -> Types.Proposal -> Element.Element Msg.Msg
+proposalView model proposal =
+    let
+        summary =
+            case Dict.get proposal.id model.view.proposalHtml of
+                Just html ->
+                    Element.html html
+
+                Nothing ->
+                    text proposal.summary
+    in
+    paragraph []
+        [ el [ alignLeft, padding 5 ] (proposalCard model proposal)
+        , summary
+        ]
+
+
+proposalLink : Types.Proposal -> Element.Element Msg.Msg
+proposalLink proposal =
+    Element.link [ onClick (Msg.RenderAsciidoc proposal.id proposal.summary) ]
+        { url = Routing.proposalUrl proposal.id
+        , label = paragraph [] [ text proposal.title ]
+        }
 
 
 {-| A card-view of a single proposal. This displays the title, presenters,
@@ -57,14 +86,8 @@ proposalCard model proposal =
                 |> List.singleton
                 |> Card.subhead []
 
-        proposalLink =
-            Element.link []
-                { url = Routing.proposalUrl proposal.id
-                , label = text proposal.title
-                }
-
         head =
-            Card.head [] [ paragraph [] [ proposalLink ] ]
+            Card.head [] [ paragraph [] [ proposalLink proposal ] ]
 
         timeSubhead =
             Card.subhead [] [ paragraph [] [ dayLink, text (" " ++ time ++ " " ++ slot) ] ]
