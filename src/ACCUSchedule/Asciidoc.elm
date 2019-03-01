@@ -1,8 +1,9 @@
-module ACCUSchedule.Asciidoc exposing (toHtml)
+port module ACCUSchedule.Asciidoc exposing (convertAsciidoc, onAsciidocConverted)
 
-import Html exposing (Attribute, Html, text)
+import Json.Encode
 
-toHtml : List (Attribute msg) -> String -> Html msg
-toHtml _ string =
-    text string
-    -- Native.Asciidoc.toHtml attrs string
+
+port convertAsciidoc : Json.Encode.Value -> Cmd msg
+
+
+port onAsciidocConverted : (Json.Encode.Value -> msg) -> Sub msg

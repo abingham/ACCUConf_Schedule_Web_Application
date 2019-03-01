@@ -1,5 +1,6 @@
 module ACCUSchedule exposing (Flags, main, subscriptions)
 
+import ACCUSchedule.Asciidoc
 import ACCUSchedule.Comms as Comms
 import ACCUSchedule.Model exposing (Model, initialModel)
 import ACCUSchedule.Msg exposing (Msg(..))
@@ -8,6 +9,7 @@ import ACCUSchedule.Update exposing (update)
 import ACCUSchedule.View exposing (view)
 import Browser
 import Browser.Events
+import Platform.Sub
 
 
 type alias Flags =
@@ -43,5 +45,8 @@ main =
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-    Browser.Events.onResize <|
-        \width height -> WindowResized { height = height, width = width }
+    Platform.Sub.batch
+        [ Browser.Events.onResize <|
+            \width height -> WindowResized { height = height, width = width }
+        , ACCUSchedule.Asciidoc.onAsciidocConverted AsciidocConverted
+        ]

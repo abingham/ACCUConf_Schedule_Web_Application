@@ -6,11 +6,6 @@ import ACCUSchedule.Types.Rooms exposing (Room)
 import ACCUSchedule.Types.Sessions exposing (Session)
 
 
--- type Track
---     = CppTrack
---     OtherTrack
-
-
 type alias PresenterId =
     Int
 

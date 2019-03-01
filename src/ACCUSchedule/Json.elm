@@ -1,11 +1,11 @@
-module ACCUSchedule.Json exposing (presentersDecoder, proposalsDecoder)
+module ACCUSchedule.Json exposing (asciidocConversionDecoder, presentersDecoder, proposalsDecoder)
 
 import ACCUSchedule.Types as Types
 import ACCUSchedule.Types.Days as Days
 import ACCUSchedule.Types.QuickieSlots as QuickieSlots
 import ACCUSchedule.Types.Rooms as Rooms
 import ACCUSchedule.Types.Sessions as Sessions
-import Json.Decode exposing (andThen, Decoder, fail, int, list, maybe, string, succeed)
+import Json.Decode exposing (Decoder, andThen, fail, int, list, maybe, string, succeed)
 import Json.Decode.Pipeline exposing (optional, required)
 import List
 
@@ -33,7 +33,7 @@ day =
                 _ ->
                     fail ("invalid day: " ++ s)
     in
-        string |> andThen decoder
+    string |> andThen decoder
 
 
 session : Decoder Sessions.Session
@@ -53,7 +53,7 @@ session =
                 _ ->
                     fail ("invalid session" ++ s)
     in
-        string |> andThen decoder
+    string |> andThen decoder
 
 
 quickieSlot : Decoder QuickieSlots.QuickieSlot
@@ -76,7 +76,7 @@ quickieSlot =
                 _ ->
                     fail ("invalid quickie slot: " ++ s)
     in
-        string |> andThen decode
+    string |> andThen decode
 
 
 room : Decoder Rooms.Room
@@ -105,7 +105,8 @@ room =
                 _ ->
                     fail ("invalid room: " ++ s)
     in
-        string |> andThen decode
+    string |> andThen decode
+
 
 
 -- track : Decoder Types.Track
@@ -115,10 +116,8 @@ room =
 --             case s of
 --                 "cpp" ->
 --                     succeed Types.CppTrack
-
 --                 "other" ->
 --                     succeed Types.OtherTrack
-
 --                 _ ->
 --                     fail ("invalid track: " ++ s)
 --     in
@@ -141,7 +140,7 @@ listDecoder dec =
                 []
                 >> succeed
     in
-        list (maybe dec) |> andThen removeFailures
+    list (maybe dec) |> andThen removeFailures
 
 
 presenterDecoder : Decoder Types.Presenter
@@ -180,3 +179,10 @@ may have come from the server.
 proposalsDecoder : Decoder (List Types.Proposal)
 proposalsDecoder =
     listDecoder proposalDecoder
+
+
+asciidocConversionDecoder : Decoder ( Int, String )
+asciidocConversionDecoder =
+    Json.Decode.succeed Tuple.pair
+        |> required "id" int
+        |> required "html" string

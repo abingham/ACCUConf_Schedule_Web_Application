@@ -14,6 +14,7 @@ import ACCUSchedule.View.PresenterCard exposing (presenterCard)
 import ACCUSchedule.View.ProposalCard exposing (proposalCard)
 import ACCUSchedule.View.Theme as Theme
 import Browser
+import Dict
 import Element exposing (Attribute, Element, alignLeft, alignRight, centerX, column, el, fill, fillPortion, height, image, link, padding, paddingXY, paragraph, px, row, spacing, text, width, wrappedRow)
 import Element.Background
 import Element.Font exposing (light)
@@ -126,9 +127,18 @@ including the full text of the abstract.
 -}
 proposalView : Model.Model -> Types.Proposal -> Element.Element Msg.Msg
 proposalView model proposal =
+    let
+        summary =
+            case Dict.get proposal.id model.view.proposalHtml of
+                Just html ->
+                    Element.html html
+
+                Nothing ->
+                    text proposal.summary
+    in
     paragraph []
         [ el [ alignLeft, padding 5 ] (proposalCard model proposal)
-        , text proposal.summary
+        , summary
         ]
 
 

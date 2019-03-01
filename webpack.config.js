@@ -37,6 +37,10 @@ var common = {
         modules: [path.join(__dirname, "src"), "node_modules"],
         extensions: [".js", ".elm", ".scss", ".png"]
     },
+    node: {
+        fs: 'empty',
+        child_process: 'empty'
+    },
     module: {
         rules: [
             {

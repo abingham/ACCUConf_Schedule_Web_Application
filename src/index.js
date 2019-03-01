@@ -1,6 +1,6 @@
 'use strict';
 
-// require('asciidoctor.js');
+var asciidoctor = require('asciidoctor.js')();
 
 const { Elm } = require('./Main');
 
@@ -30,4 +30,12 @@ setTimeout(function () {
     app.ports.store.subscribe(bookmarks => {
         localStorage.setItem(bookmarksItem, JSON.stringify(bookmarks));
     })
+
+    app.ports.convertAsciidoc.subscribe(function(request) {
+        var html = asciidoctor.convert(request.raw_text);
+        app.ports.onAsciidocConverted.send({
+            id: request.id,
+            html: html 
+        });
+    });
 });
