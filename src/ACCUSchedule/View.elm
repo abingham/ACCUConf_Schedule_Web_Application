@@ -14,7 +14,7 @@ import ACCUSchedule.View.PresenterCard exposing (presenterCard)
 import ACCUSchedule.View.ProposalCard exposing (proposalCard)
 import ACCUSchedule.View.Theme as Theme
 import Browser
-import Element exposing (Attribute, Element, alignLeft, alignRight, centerX, column, el, fill, fillPortion, height, image, link, padding, paddingXY, paragraph, px, row, shrink, spacing, text, width, wrappedRow)
+import Element exposing (Attribute, Element, alignLeft, alignRight, centerX, column, el, fill, fillPortion, height, image, link, padding, paddingXY, paragraph, px, row, spacing, text, width, wrappedRow)
 import Element.Background
 import Element.Font exposing (light)
 import Element.Input exposing (labelHidden, placeholder, search)

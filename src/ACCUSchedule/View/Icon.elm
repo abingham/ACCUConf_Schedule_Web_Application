@@ -2,7 +2,6 @@ module ACCUSchedule.View.Icon exposing (icon)
 
 import ACCUSchedule.Msg as Msg
 import Element exposing (Attribute, Element, el, htmlAttribute, text)
-import Element.Events exposing (onClick)
 import Element.Font as Font
 import Html.Attributes exposing (style)
 

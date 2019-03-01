@@ -10,9 +10,8 @@ import ACCUSchedule.Types.Rooms as Rooms
 import ACCUSchedule.Types.Sessions as Sessions
 import ACCUSchedule.View.Card as Card
 import ACCUSchedule.View.Icon as Icon
-import Element exposing (el, htmlAttribute, image, paragraph, text)
+import Element exposing (htmlAttribute, paragraph, text)
 import Element.Events exposing (onClick)
-import Element.Font as Font
 import Html.Attributes exposing (style)
 
 
