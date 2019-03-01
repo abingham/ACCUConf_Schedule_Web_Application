@@ -25,15 +25,12 @@ update msg model =
             ( { model | proposals = proposals }, Cmd.none )
 
         Msg.ProposalsResult (Err _) ->
-            -- TODO: display error message or something...maybe a button for
-            -- re-fetching the proposals.
             ( model, Cmd.none )
 
         Msg.PresentersResult (Ok presenters) ->
             ( { model | presenters = presenters }, Cmd.none )
 
         Msg.PresentersResult (Err _) ->
-            -- TODO: display error message or something...
             ( model, Cmd.none )
 
         Msg.ToggleBookmark id ->
@@ -58,7 +55,6 @@ update msg model =
         Msg.SetSearchTerm term ->
             ( model, Nav.replaceUrl model.key (Routing.searchUrl term) )
 
-        -- TODO [ Dispatch.forward msgs ]
         Msg.LinkClicked urlRequest ->
             case urlRequest of
                 Browser.Internal url ->

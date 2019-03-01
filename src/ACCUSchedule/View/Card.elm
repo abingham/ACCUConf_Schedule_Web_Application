@@ -15,7 +15,6 @@ withDefaultAttrs elemType defaults attrs =
 
 view : List (Attribute Msg.Msg) -> List (Element Msg.Msg) -> Element Msg.Msg
 view =
-    -- TODO: this hardcoded 300 is a mess. Can we instead calculate something? Perhaps based on font size?
     withDefaultAttrs column
         [ width (px 300)
         , Element.Border.width 1

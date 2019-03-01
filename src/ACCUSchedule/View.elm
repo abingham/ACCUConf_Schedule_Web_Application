@@ -114,8 +114,6 @@ dayView model proposals day =
 -}
 agendaView : Model.Model -> Element.Element Msg.Msg
 agendaView model =
-    -- TODO: The ordering of cards should be reviewed.
-    -- TODO: Should we split them out by days?
     model.proposals
         |> List.filter (\p -> List.member p.id model.bookmarks)
         >> List.sortBy (.session >> Sessions.ordinal)
@@ -130,7 +128,7 @@ proposalView : Model.Model -> Types.Proposal -> Element.Element Msg.Msg
 proposalView model proposal =
     paragraph []
         [ el [ alignLeft, padding 5 ] (proposalCard model proposal)
-        , text proposal.summary -- TODO: asciidoc
+        , text proposal.summary
         ]
 
 
@@ -140,7 +138,7 @@ presenterView : Model.Model -> Types.Presenter -> Element.Element Msg.Msg
 presenterView model presenter =
     paragraph []
         [ el [ alignLeft, padding 5 ] (presenterCard model presenter)
-        , text presenter.bio -- TODO: Markdown / asciidoc?
+        , text presenter.bio
         ]
 
 
@@ -291,8 +289,6 @@ footerLink =
 
 footer : Element Msg.Msg
 footer =
-    -- TODO: Items in footer should stack if the view is narrow. Can paragraph to this?
-    -- TODO: Sticky footer?
     bodyRow [ Element.Background.color Theme.background ]
         [ wrappedRow [ paddingXY 0 10, spacing 20, width fill ]
             [ text "ACCU 2019 Schedule"
