@@ -48,5 +48,5 @@ subscriptions _ =
     Platform.Sub.batch
         [ Browser.Events.onResize <|
             \width height -> WindowResized { height = height, width = width }
-        , ACCUSchedule.Asciidoc.onAsciidocConverted AsciidocConverted
+        , ACCUSchedule.Asciidoc.onAsciidocConverted AsciidocRendered
         ]

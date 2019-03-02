@@ -38,7 +38,7 @@ proposalView model proposal =
 
 proposalLink : Types.Proposal -> Element.Element Msg.Msg
 proposalLink proposal =
-    Element.link [ onClick (Msg.RenderAsciidoc proposal.id proposal.summary) ]
+    Element.link []
         { url = Routing.proposalUrl proposal.id
         , label = paragraph [] [ text proposal.title ]
         }

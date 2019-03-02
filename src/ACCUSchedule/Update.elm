@@ -7,8 +7,10 @@ import ACCUSchedule.Model exposing (Model, raisePresenter, raiseProposal, setPro
 import ACCUSchedule.Msg as Msg
 import ACCUSchedule.Routing as Routing
 import ACCUSchedule.Storage as Storage
+import ACCUSchedule.Types as Types
 import Browser
 import Browser.Navigation as Nav
+import Dict
 import Html
 import Html.Parser
 import Html.Parser.Util
@@ -17,6 +19,7 @@ import Json.Encode
 import Platform.Cmd exposing (batch)
 import Return exposing (command, map, singleton)
 import Url
+import Url.Parser exposing ((</>), int, s)
 
 
 update : Msg.Msg -> Model -> ( Model, Cmd Msg.Msg )
@@ -28,21 +31,8 @@ update msg model =
                 |> command (Comms.fetchPresenters model)
 
         Msg.ProposalsResult (Ok proposals) ->
-            -- let
-            --     makeRequest p =
-            --         Json.Encode.object
-            --             [ ( "raw_text", Json.Encode.string p.summary )
-            --             , ( "id", Json.Encode.int p.id )
-            --             ]
-            --             |> Asciidoc.convertAsciidoc
-            --     conversions =
-            --         proposals
-            --             |> List.map makeRequest
-            --             |> batch
-            -- in
             ( { model | proposals = proposals }, Cmd.none )
 
-        -- |> command conversions
         Msg.ProposalsResult (Err _) ->
             ( model, Cmd.none )
 
@@ -52,29 +42,22 @@ update msg model =
         Msg.PresentersResult (Err _) ->
             ( model, Cmd.none )
 
-        Msg.RenderAsciidoc proposalId summary ->
+        Msg.AsciidocRendered value ->
             let
-                cmd =
-                    Json.Encode.object
-                        [ ( "raw_text", Json.Encode.string summary )
-                        , ( "id", Json.Encode.int proposalId )
-                        ]
-                        |> Asciidoc.convertAsciidoc
+                m =
+                    case Json.Decode.decodeValue asciidocConversionDecoder value of
+                        Ok ( id, htmlString ) ->
+                            case Html.Parser.run htmlString of
+                                Ok parsedNodes ->
+                                    setProposalHtml id (Html.Parser.Util.toVirtualDom parsedNodes |> Html.div []) model
+
+                                Err _ ->
+                                    model
+
+                        _ ->
+                            model
             in
-            ( model, cmd )
-
-        Msg.AsciidocConverted value ->
-            case Json.Decode.decodeValue asciidocConversionDecoder value of
-                Ok ( id, htmlString ) ->
-                    case Html.Parser.run htmlString of
-                        Ok parsedNodes ->
-                            ( setProposalHtml id (Html.Parser.Util.toVirtualDom parsedNodes |> Html.div []) model, Cmd.none )
-
-                        Err _ ->
-                            ( model, Cmd.none )
-
-                _ ->
-                    ( model, Cmd.none )
+            ( m, Cmd.none )
 
         Msg.ToggleBookmark id ->
             let
