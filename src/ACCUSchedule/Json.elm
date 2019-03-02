@@ -1,4 +1,4 @@
-module ACCUSchedule.Json exposing (asciidocConversionDecoder, presentersDecoder, proposalsDecoder)
+module ACCUSchedule.Json exposing (presentersDecoder, proposalsDecoder)
 
 import ACCUSchedule.Types as Types
 import ACCUSchedule.Types.Days as Days
@@ -179,10 +179,3 @@ may have come from the server.
 proposalsDecoder : Decoder (List Types.Proposal)
 proposalsDecoder =
     listDecoder proposalDecoder
-
-
-asciidocConversionDecoder : Decoder ( Int, String )
-asciidocConversionDecoder =
-    Json.Decode.succeed Tuple.pair
-        |> required "id" int
-        |> required "html" string

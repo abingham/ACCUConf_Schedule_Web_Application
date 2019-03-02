@@ -13,6 +13,7 @@ import ACCUSchedule.View.Icon as Icon
 import Dict
 import Element exposing (alignLeft, el, htmlAttribute, padding, paragraph, text)
 import Element.Events exposing (onClick)
+import Html
 import Html.Attributes exposing (style)
 
 
@@ -32,7 +33,10 @@ proposalView model proposal =
     in
     paragraph []
         [ el [ alignLeft, padding 5 ] (proposalCard model proposal)
-        , summary
+        , Html.node "render-asciidoc"
+            []
+            [ Html.text proposal.summary ]
+            |> Element.html
         ]
 
 

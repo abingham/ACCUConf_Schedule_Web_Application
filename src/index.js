@@ -30,12 +30,18 @@ setTimeout(function () {
     app.ports.store.subscribe(bookmarks => {
         localStorage.setItem(bookmarksItem, JSON.stringify(bookmarks));
     })
-
-    app.ports.convertAsciidoc.subscribe(function(request) {
-        var html = asciidoctor.convert(request.raw_text);
-        app.ports.onAsciidocConverted.send({
-            id: request.id,
-            html: html 
-        });
-    });
 });
+class RenderAsciidoc extends HTMLElement {
+    constructor() {
+        super();
+    } 
+
+    connectedCallback() {
+        var shadowRoot = this.attachShadow({mode: 'open'}); 
+        let text = this.childNodes[0].data;
+        let html = asciidoctor.convert(text);
+        shadowRoot.innerHTML = html;
+    }
+}
+  
+window.customElements.define('render-asciidoc', RenderAsciidoc);

@@ -1,8 +1,6 @@
 module ACCUSchedule.Update exposing (update)
 
-import ACCUSchedule.Asciidoc as Asciidoc
 import ACCUSchedule.Comms as Comms
-import ACCUSchedule.Json exposing (asciidocConversionDecoder)
 import ACCUSchedule.Model exposing (Model, raisePresenter, raiseProposal, setProposalHtml)
 import ACCUSchedule.Msg as Msg
 import ACCUSchedule.Routing as Routing
@@ -41,23 +39,6 @@ update msg model =
 
         Msg.PresentersResult (Err _) ->
             ( model, Cmd.none )
-
-        Msg.AsciidocRendered value ->
-            let
-                m =
-                    case Json.Decode.decodeValue asciidocConversionDecoder value of
-                        Ok ( id, htmlString ) ->
-                            case Html.Parser.run htmlString of
-                                Ok parsedNodes ->
-                                    setProposalHtml id (Html.Parser.Util.toVirtualDom parsedNodes |> Html.div []) model
-
-                                Err _ ->
-                                    model
-
-                        _ ->
-                            model
-            in
-            ( m, Cmd.none )
 
         Msg.ToggleBookmark id ->
             let

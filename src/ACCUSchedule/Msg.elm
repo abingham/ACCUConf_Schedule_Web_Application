@@ -11,7 +11,6 @@ type Msg
     = FetchData
     | ProposalsResult (Result Http.Error (List Types.Proposal))
     | PresentersResult (Result Http.Error (List Types.Presenter))
-    | AsciidocRendered Json.Encode.Value
     | ToggleBookmark Types.ProposalId
     | RaiseProposal Bool Types.ProposalId
     | RaisePresenter Bool Types.PresenterId
