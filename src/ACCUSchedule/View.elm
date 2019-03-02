@@ -128,8 +128,8 @@ agendaView model =
 presenterView : Model.Model -> Types.Presenter -> Element.Element Msg.Msg
 presenterView model presenter =
     paragraph []
-        [ el [ alignLeft, padding 5 ] (presenterCard model presenter)
-        , renderAsciidoc presenter.bio
+        [ el [ alignRight, padding 5 ] (presenterCard model presenter)
+        , renderAsciidoc [] presenter.bio
         ]
 
 

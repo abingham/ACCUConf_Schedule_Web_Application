@@ -12,7 +12,7 @@ import ACCUSchedule.View.Asciidoc exposing (renderAsciidoc)
 import ACCUSchedule.View.Card as Card
 import ACCUSchedule.View.Icon as Icon
 import Dict
-import Element exposing (alignLeft, el, htmlAttribute, padding, paragraph, text)
+import Element exposing (alignLeft, alignRight, el, htmlAttribute, padding, paragraph, spacing, text)
 import Element.Events exposing (onClick)
 import Html
 import Html.Attributes exposing (style)
@@ -32,9 +32,9 @@ proposalView model proposal =
                 Nothing ->
                     text proposal.summary
     in
-    paragraph []
-        [ el [ alignLeft, padding 5 ] (proposalCard model proposal)
-        , renderAsciidoc proposal.summary
+    paragraph [ spacing 20 ]
+        [ el [ alignRight, padding 5 ] (proposalCard model proposal)
+        , renderAsciidoc [] proposal.summary
         ]
 
 

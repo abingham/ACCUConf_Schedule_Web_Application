@@ -4,8 +4,6 @@
 * Use wrappedColumn for displaying cards. This will give us a lot of stuff for
   free, I think.
 
-* Get Markdown and Asciidoc stuff working.
-
 * Display error messages on failed data fetches
 
 * Improve ordering/display of agenda. The cards should probably be ordered by time and split up by days.
