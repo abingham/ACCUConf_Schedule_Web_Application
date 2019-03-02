@@ -26,12 +26,13 @@ presenterCard model presenter =
         proposals =
             Model.proposals model presenter
 
-        proposalLink p =
-            Card.text []
-                [ proposalLink p ]
-
         proposalLinks =
-            List.map proposalLink proposals
+            List.map
+                (proposalLink
+                    >> List.singleton
+                    >> Card.text []
+                )
+                proposals
 
         country =
             case ISO3166.countryName presenter.country of

@@ -9,6 +9,7 @@ import ACCUSchedule.Types.Days as Days
 import ACCUSchedule.Types.QuickieSlots as QuickieSlots
 import ACCUSchedule.Types.Rooms as Rooms
 import ACCUSchedule.Types.Sessions as Sessions
+import ACCUSchedule.View.Asciidoc exposing (renderAsciidoc)
 import ACCUSchedule.View.Card as Card
 import ACCUSchedule.View.PresenterCard exposing (presenterCard)
 import ACCUSchedule.View.Proposal exposing (proposalCard, proposalView)
@@ -128,7 +129,7 @@ presenterView : Model.Model -> Types.Presenter -> Element.Element Msg.Msg
 presenterView model presenter =
     paragraph []
         [ el [ alignLeft, padding 5 ] (presenterCard model presenter)
-        , text presenter.bio
+        , renderAsciidoc presenter.bio
         ]
 
 
