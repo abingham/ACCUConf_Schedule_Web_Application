@@ -31,13 +31,10 @@ setTimeout(function () {
         localStorage.setItem(bookmarksItem, JSON.stringify(bookmarks));
     })
 });
-class RenderAsciidoc extends HTMLElement {
-    constructor() {
-        super();
-    } 
 
+class RenderAsciidoc extends HTMLElement {
     connectedCallback() {
-        var shadowRoot = this.attachShadow({mode: 'open'}); 
+        let shadowRoot = this.attachShadow({mode: 'open'}); 
         let text = this.childNodes[0].data;
         let html = asciidoctor.convert(text);
         shadowRoot.innerHTML = html;
