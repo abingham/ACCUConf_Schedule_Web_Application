@@ -167,21 +167,18 @@ notFoundView =
     text "page not found :("
 
 
+{-| A top-level row in the view.
+-}
 bodyRow : List (Attribute Msg.Msg) -> List (Element Msg.Msg) -> Element Msg.Msg
-bodyRow attrs center =
+bodyRow attrs elements =
     let
         defaultAttrs =
-            [ padding 10, width fill ]
+            [ padding 10, width fill, height fill ]
 
         fullAttrs =
             defaultAttrs ++ attrs
     in
-    row fullAttrs
-        [ --column [ width (fillPortion 2) ] []
-          column [ width fill, height fill ] [ row [ width fill ] center ]
-
-        -- , column [ width (fillPortion 2) ] []
-        ]
+    row fullAttrs elements
 
 
 header : String -> Element Msg.Msg
@@ -218,10 +215,10 @@ header title =
             List.append dayLinks [ presentersLink, agendaLink, searchLink ]
     in
     bodyRow [ Element.Background.color Theme.background ]
-        [ column [ width fill, spacing 20, paddingXY 0 20 ]
+        [ column [ width fill, spacing 20 ]
             [ wrappedRow [ spacing 20, width fill ]
                 [ image [ width shrink ] { src = "/img/accu-logo.png", description = "ACCU logo" }
-                , column [ width fill ] [ row [ centerX, Element.Font.size (Theme.fontSize 4) ] [ text title ] ]
+                , text title |> el [ centerX, Element.Font.size (Theme.fontSize 4) ]
                 ]
             , wrappedRow
                 [ width fill, spacing 20 ]
@@ -230,24 +227,10 @@ header title =
         ]
 
 
-
--- [ column [ width fill, spacing 20, paddingXY 0 20 ]
---     [ row [ width fill ]
---         [ image []
---             { src = "/img/accu-logo.png"
---             , description = "ACCU logo"
---             }
---         , column [ Element.Font.size (Theme.fontSize 4), width fill, centerX ] [ column [ centerX ] [ text title ] ]
---         ]
---     , wrappedRow [ width fill, spacing 20 ] navLinks
---     ]
--- ]
-
-
-body : Model.Model -> ( String, Element Msg.Msg )
-body model =
+content : Model.Model -> ( String, Element Msg.Msg )
+content model =
     let
-        ( title, content ) =
+        ( title, contentElement ) =
             case Routing.urlToRoute model.url of
                 Routing.Day day ->
                     ( Days.toString day, dayView model model.proposals day )
@@ -291,7 +274,7 @@ body model =
                 _ ->
                     ( "", notFoundView )
     in
-    ( title, bodyRow [] [ content ] )
+    ( title, bodyRow [] [ contentElement ] )
 
 
 footerLink : List (Element.Attribute Msg.Msg) -> { url : String, label : Element.Element Msg.Msg } -> Element.Element Msg.Msg
@@ -334,13 +317,13 @@ footer =
 view : Model.Model -> Browser.Document Msg.Msg
 view model =
     let
-        ( title, bodyContent ) =
-            body model
+        ( title, mainContent ) =
+            content model
 
-        content =
-            column [ width fill, height fill ] [ header title, bodyContent, footer ]
+        fullBody =
+            column [ width fill, height fill ] [ header title, mainContent, footer ]
     in
     { title = "ACCU 2019"
     , body =
-        [ Element.layout [ Element.Font.size (Theme.fontSize 1) ] content ]
+        [ Element.layout [ Element.Font.size (Theme.fontSize 1) ] fullBody ]
     }
