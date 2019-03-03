@@ -28,7 +28,7 @@ presenterCard model presenter =
 
         proposalLinks =
             List.map
-                (proposalLink
+                (proposalLink []
                     >> List.singleton
                     >> Card.text []
                 )

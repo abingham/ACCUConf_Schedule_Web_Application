@@ -21,17 +21,17 @@ import Html.Attributes exposing (style)
 {-| Display a single proposal. This includes all of the details of the proposal,
 including the full text of the abstract.
 -}
-proposalView : Model.Model -> Types.Proposal -> Element.Element Msg.Msg
-proposalView model proposal =
-    paragraph [ spacing 20 ]
-        [ el [ alignRight, padding 5 ] (proposalCard model proposal)
+proposalView : List (Element.Attribute Msg.Msg) -> Model.Model -> Types.Proposal -> Element.Element Msg.Msg
+proposalView attrs model proposal =
+    paragraph attrs
+        [ el [ alignRight, padding 5 ] (proposalCard [] model proposal)
         , renderAsciidoc [] proposal.summary
         ]
 
 
-proposalLink : Types.Proposal -> Element.Element Msg.Msg
-proposalLink proposal =
-    Element.link []
+proposalLink : List (Element.Attribute Msg.Msg) -> Types.Proposal -> Element.Element Msg.Msg
+proposalLink attrs proposal =
+    Element.link attrs
         { url = Routing.proposalUrl proposal.id
         , label = paragraph [] [ text proposal.title ]
         }
@@ -42,8 +42,8 @@ location, and potentially other information about a proposal, though not the
 full text of the abstract. This includes a clickable icon for "starring" a
 propposal.
 -}
-proposalCard : Model.Model -> Types.Proposal -> Element.Element Msg.Msg
-proposalCard model proposal =
+proposalCard : List (Element.Attribute Msg.Msg) -> Model.Model -> Types.Proposal -> Element.Element Msg.Msg
+proposalCard attrs model proposal =
     let
         room =
             Rooms.toString proposal.room
@@ -80,7 +80,7 @@ proposalCard model proposal =
                 |> Card.subhead []
 
         head =
-            Card.head [] [ paragraph [] [ proposalLink proposal ] ]
+            Card.head [] [ paragraph [] [ proposalLink [] proposal ] ]
 
         timeSubhead =
             Card.subhead [] [ paragraph [] [ dayLink, text (" " ++ time ++ " " ++ slot) ] ]
@@ -109,4 +109,4 @@ proposalCard model proposal =
         actions =
             Card.actions [] [ bookmarkAction ]
     in
-    Card.view [] [ title, actions ]
+    Card.view attrs [ title, actions ]

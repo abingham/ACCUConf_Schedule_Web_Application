@@ -43,8 +43,8 @@ findPresenter model id =
     List.filter (\p -> p.id == id) model.presenters |> List.head
 
 
-sessionView : Model.Model -> List Types.Proposal -> Sessions.Session -> Element.Element Msg.Msg
-sessionView model props session =
+sessionView : List (Element.Attribute Msg.Msg) -> Model.Model -> List Types.Proposal -> Sessions.Session -> Element.Element Msg.Msg
+sessionView attrs model props session =
     let
         room =
             .room >> Rooms.ordinal
@@ -70,86 +70,88 @@ sessionView model props session =
             List.filter (.session >> (==) session) props
                 |> List.sortWith compareSlots
                 |> List.sortWith compareRooms
+
+        elems =
+            case List.head proposals of
+                Nothing ->
+                    []
+
+                Just prop ->
+                    let
+                        s =
+                            Sessions.toString prop.session
+
+                        d =
+                            Days.toString prop.day
+
+                        label =
+                            d ++ ", " ++ s
+
+                        cards =
+                            List.map (proposalCard [] model) proposals
+                    in
+                    [ text label
+                    , Card.flow [] cards
+                    ]
     in
-    case List.head proposals of
-        Nothing ->
-            row [] []
-
-        Just prop ->
-            let
-                s =
-                    Sessions.toString prop.session
-
-                d =
-                    Days.toString prop.day
-
-                label =
-                    d ++ ", " ++ s
-
-                cards =
-                    List.map (proposalCard model) proposals
-            in
-            column []
-                [ text label
-                , Card.flow [ width fill ] cards
-                ]
+    column attrs elems
 
 
 {-| Display all proposals for a particular day.
 -}
-dayView : Model.Model -> List Types.Proposal -> Days.Day -> Element.Element Msg.Msg
-dayView model proposals day =
+dayView : List (Element.Attribute Msg.Msg) -> Model.Model -> List Types.Proposal -> Days.Day -> Element.Element Msg.Msg
+dayView attrs model proposals day =
     let
         props =
             List.filter (.day >> (==) day) proposals
 
-        sview =
-            sessionView model props
+        sview session =
+            sessionView [ width fill ] model props session |> List.singleton >> row []
     in
     List.map
         sview
         Sessions.conferenceSessions
-        |> column [ centerX ]
+        |> column attrs
 
 
 {-| Display all "bookmarked" proposals, i.e. the users personal agenda.
 -}
-agendaView : Model.Model -> Element.Element Msg.Msg
-agendaView model =
+agendaView : List (Element.Attribute Msg.Msg) -> Model.Model -> Element.Element Msg.Msg
+agendaView attrs model =
     model.proposals
         |> List.filter (\p -> List.member p.id model.bookmarks)
         >> List.sortBy (.session >> Sessions.ordinal)
-        >> List.map (\p -> proposalCard model p)
-        >> Card.flow []
+        >> List.map (\p -> proposalCard [] model p)
+        >> Card.flow attrs
 
 
 {-| Display a single presenter
 -}
-presenterView : Model.Model -> Types.Presenter -> Element.Element Msg.Msg
-presenterView model presenter =
-    paragraph []
+presenterView : List (Element.Attribute Msg.Msg) -> Model.Model -> Types.Presenter -> Element.Element Msg.Msg
+presenterView attrs model presenter =
+    paragraph attrs
         [ el [ alignRight, padding 5 ] (presenterCard model presenter)
         , renderAsciidoc [] presenter.bio
         ]
 
 
-presentersView : Model.Model -> Element.Element Msg.Msg
-presentersView model =
+presentersView : List (Element.Attribute Msg.Msg) -> Model.Model -> Element.Element Msg.Msg
+presentersView attrs model =
     model.presenters
         |> List.sortBy .name
         |> List.map (presenterCard model)
-        |> Card.flow []
+        |> Card.flow attrs
 
 
-searchView : String -> Model.Model -> Element.Element Msg.Msg
-searchView term model =
+searchView : List (Element.Attribute Msg.Msg) -> Model.Model -> String -> Element.Element Msg.Msg
+searchView attrs model term =
     let
         proposalCards =
             Search.search term model
-                |> List.map (proposalCard model)
+                |> List.map (proposalCard [] model)
                 |> Card.flow []
     in
-    column [ width fill ]
+    column attrs
         [ row [ width fill ]
             [ search []
                 { onChange = Msg.SetSearchTerm
@@ -162,9 +164,11 @@ searchView term model =
         ]
 
 
-notFoundView : Element.Element Msg.Msg
-notFoundView =
+notFoundView : List (Element.Attribute Msg.Msg) -> Element.Element Msg.Msg
+notFoundView attrs =
     text "page not found :("
+        |> List.singleton
+        >> paragraph attrs
 
 
 {-| A top-level row in the view.
@@ -230,49 +234,53 @@ header title =
 content : Model.Model -> ( String, Element Msg.Msg )
 content model =
     let
+        attrs =
+            [ width fill ]
+
         ( title, contentElement ) =
             case Routing.urlToRoute model.url of
                 Routing.Day day ->
-                    ( Days.toString day, dayView model model.proposals day )
+                    ( Days.toString day, dayView attrs model model.proposals day )
 
                 Routing.Proposal id ->
                     ( "Proposal"
                     , case findProposal model id of
                         Just proposal ->
-                            proposalView model proposal
+                            proposalView attrs model proposal
 
                         Nothing ->
-                            notFoundView
+                            notFoundView []
                     )
 
                 Routing.Presenter id ->
                     ( "Presenter"
                     , case findPresenter model id of
                         Just presenter ->
-                            presenterView model presenter
+                            presenterView attrs model presenter
 
                         Nothing ->
-                            notFoundView
+                            notFoundView []
                     )
 
                 Routing.Presenters ->
-                    ( "Presenters", presentersView model )
+                    ( "Presenters", presentersView attrs model )
 
                 Routing.Agenda ->
-                    ( "Favorites", agendaView model )
+                    ( "Favorites", agendaView attrs model )
 
                 Routing.Search term ->
                     ( "Search"
-                    , case term of
-                        Just t ->
-                            searchView t model
+                    , searchView attrs model <|
+                        case term of
+                            Just t ->
+                                t
 
-                        Nothing ->
-                            searchView "" model
+                            Nothing ->
+                                ""
                     )
 
                 _ ->
-                    ( "", notFoundView )
+                    ( "", notFoundView [] )
     in
     ( title, bodyRow [] [ contentElement ] )
 
