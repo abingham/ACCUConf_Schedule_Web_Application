@@ -17,4 +17,3 @@ type Msg
     | SetSearchTerm String
     | LinkClicked Browser.UrlRequest
     | UrlChange Url.Url
-    | WindowResized { width : Int, height : Int }

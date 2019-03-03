@@ -1,7 +1,7 @@
 module ACCUSchedule.Update exposing (update)
 
 import ACCUSchedule.Comms as Comms
-import ACCUSchedule.Model exposing (Model, raisePresenter, raiseProposal, setProposalHtml)
+import ACCUSchedule.Model exposing (Model, raisePresenter, raiseProposal)
 import ACCUSchedule.Msg as Msg
 import ACCUSchedule.Routing as Routing
 import ACCUSchedule.Storage as Storage
@@ -72,13 +72,3 @@ update msg model =
 
         Msg.UrlChange url ->
             ( { model | url = url }, Cmd.none )
-
-        Msg.WindowResized size ->
-            let
-                view =
-                    model.view
-
-                new_view =
-                    { view | windowSize = size }
-            in
-            ( { model | view = new_view }, Cmd.none )

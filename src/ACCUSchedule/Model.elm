@@ -5,7 +5,6 @@ module ACCUSchedule.Model exposing
     , proposals
     , raisePresenter
     , raiseProposal
-    , setProposalHtml
     )
 
 {-| The overal application model.
@@ -22,11 +21,6 @@ import Url
 type alias ViewModel =
     { raisedProposal : Maybe Types.ProposalId
     , raisedPresenter : Maybe Types.PresenterId
-    , windowSize :
-        { width : Int
-        , height : Int
-        }
-    , proposalHtml : Dict.Dict Types.ProposalId (Html.Html Msg.Msg)
     }
 
 
@@ -85,18 +79,6 @@ raisePresenter raised id model =
     { model | view = { view | raisedPresenter = val } }
 
 
-setProposalHtml : Types.ProposalId -> Html.Html Msg.Msg -> Model -> Model
-setProposalHtml id html model =
-    let
-        view =
-            model.view
-
-        proposalHtml =
-            Dict.insert id html view.proposalHtml
-    in
-    { model | view = { view | proposalHtml = proposalHtml } }
-
-
 initialModel : String -> List Types.ProposalId -> Nav.Key -> Url.Url -> Int -> Int -> Model
 initialModel apiBaseUrl bookmarks key url width height =
     { proposals = []
@@ -108,10 +90,5 @@ initialModel apiBaseUrl bookmarks key url width height =
     , view =
         { raisedProposal = Nothing
         , raisedPresenter = Nothing
-        , windowSize =
-            { width = width
-            , height = height
-            }
-        , proposalHtml = Dict.empty
         }
     }

@@ -23,15 +23,6 @@ including the full text of the abstract.
 -}
 proposalView : Model.Model -> Types.Proposal -> Element.Element Msg.Msg
 proposalView model proposal =
-    let
-        summary =
-            case Dict.get proposal.id model.view.proposalHtml of
-                Just html ->
-                    Element.html html
-
-                Nothing ->
-                    text proposal.summary
-    in
     paragraph [ spacing 20 ]
         [ el [ alignRight, padding 5 ] (proposalCard model proposal)
         , renderAsciidoc [] proposal.summary

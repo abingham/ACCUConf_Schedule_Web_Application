@@ -44,7 +44,4 @@ main =
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-    Platform.Sub.batch
-        [ Browser.Events.onResize <|
-            \width height -> WindowResized { height = height, width = width }
-        ]
+    Platform.Sub.none
