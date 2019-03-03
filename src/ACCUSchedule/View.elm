@@ -16,7 +16,7 @@ import ACCUSchedule.View.Proposal exposing (proposalCard, proposalView)
 import ACCUSchedule.View.Theme as Theme
 import Browser
 import Dict
-import Element exposing (Attribute, Element, alignLeft, alignRight, centerX, column, el, fill, fillPortion, height, image, link, padding, paddingXY, paragraph, px, row, spacing, text, width, wrappedRow)
+import Element exposing (Attribute, Element, alignLeft, alignRight, centerX, column, el, fill, fillPortion, height, image, link, padding, paddingXY, paragraph, px, row, shrink, spacing, text, width, wrappedRow)
 import Element.Background
 import Element.Font exposing (light)
 import Element.Input exposing (labelHidden, placeholder, search)
@@ -91,7 +91,7 @@ sessionView model props session =
             in
             column []
                 [ text label
-                , Card.flow [] cards
+                , Card.flow [ width fill ] cards
                 ]
 
 
@@ -171,20 +171,21 @@ bodyRow : List (Attribute Msg.Msg) -> List (Element Msg.Msg) -> Element Msg.Msg
 bodyRow attrs center =
     let
         defaultAttrs =
-            [ width fill ]
+            [ padding 10, width fill ]
 
         fullAttrs =
             defaultAttrs ++ attrs
     in
     row fullAttrs
-        [ column [ width (fillPortion 2) ] []
-        , column [ width (fillPortion 8), height fill ] center
-        , column [ width (fillPortion 2) ] []
+        [ --column [ width (fillPortion 2) ] []
+          column [ width fill, height fill ] [ row [ width fill ] center ]
+
+        -- , column [ width (fillPortion 2) ] []
         ]
 
 
-header : Element Msg.Msg
-header =
+header : String -> Element Msg.Msg
+header title =
     let
         dayLink day =
             link []
@@ -218,59 +219,79 @@ header =
     in
     bodyRow [ Element.Background.color Theme.background ]
         [ column [ width fill, spacing 20, paddingXY 0 20 ]
-            [ row []
-                [ image []
-                    { src = "/img/accu-logo.png"
-                    , description = "ACCU logo"
-                    }
+            [ wrappedRow [ spacing 20, width fill ]
+                [ image [ width shrink ] { src = "/img/accu-logo.png", description = "ACCU logo" }
+                , column [ width fill ] [ row [ centerX, Element.Font.size (Theme.fontSize 4) ] [ text title ] ]
                 ]
-            , wrappedRow [ width fill, spacing 20 ] navLinks
+            , wrappedRow
+                [ width fill, spacing 20 ]
+                navLinks
             ]
         ]
 
 
-body : Model.Model -> Element Msg.Msg
+
+-- [ column [ width fill, spacing 20, paddingXY 0 20 ]
+--     [ row [ width fill ]
+--         [ image []
+--             { src = "/img/accu-logo.png"
+--             , description = "ACCU logo"
+--             }
+--         , column [ Element.Font.size (Theme.fontSize 4), width fill, centerX ] [ column [ centerX ] [ text title ] ]
+--         ]
+--     , wrappedRow [ width fill, spacing 20 ] navLinks
+--     ]
+-- ]
+
+
+body : Model.Model -> ( String, Element Msg.Msg )
 body model =
     let
-        content =
+        ( title, content ) =
             case Routing.urlToRoute model.url of
                 Routing.Day day ->
-                    dayView model model.proposals day
+                    ( Days.toString day, dayView model model.proposals day )
 
                 Routing.Proposal id ->
-                    case findProposal model id of
+                    ( "Proposal"
+                    , case findProposal model id of
                         Just proposal ->
                             proposalView model proposal
 
                         Nothing ->
                             notFoundView
+                    )
 
                 Routing.Presenter id ->
-                    case findPresenter model id of
+                    ( "Presenter"
+                    , case findPresenter model id of
                         Just presenter ->
                             presenterView model presenter
 
                         Nothing ->
                             notFoundView
+                    )
 
                 Routing.Presenters ->
-                    presentersView model
+                    ( "Presenters", presentersView model )
 
                 Routing.Agenda ->
-                    agendaView model
+                    ( "Favorites", agendaView model )
 
                 Routing.Search term ->
-                    case term of
+                    ( "Search"
+                    , case term of
                         Just t ->
                             searchView t model
 
                         Nothing ->
                             searchView "" model
+                    )
 
                 _ ->
-                    notFoundView
+                    ( "", notFoundView )
     in
-    bodyRow [ paddingXY 0 20 ] [ content ]
+    ( title, bodyRow [] [ content ] )
 
 
 footerLink : List (Element.Attribute Msg.Msg) -> { url : String, label : Element.Element Msg.Msg } -> Element.Element Msg.Msg
@@ -313,8 +334,11 @@ footer =
 view : Model.Model -> Browser.Document Msg.Msg
 view model =
     let
+        ( title, bodyContent ) =
+            body model
+
         content =
-            column [ width fill, height fill ] [ header, body model, footer ]
+            column [ width fill, height fill ] [ header title, bodyContent, footer ]
     in
     { title = "ACCU 2019"
     , body =
