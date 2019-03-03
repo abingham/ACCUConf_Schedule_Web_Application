@@ -72,7 +72,7 @@ proposalCard attrs model proposal =
                 }
 
         presenterSubhead =
-            Model.presenters model proposal
+            Model.proposalPresenters model proposal
                 |> List.map presenterLink
                 |> List.intersperse (text ", ")
                 |> paragraph []
@@ -94,7 +94,7 @@ proposalCard attrs model proposal =
         bookmarkAction =
             let
                 name =
-                    if List.member proposal.id model.bookmarks then
+                    if Model.isBookmarked proposal.id model then
                         "favorite"
 
                     else

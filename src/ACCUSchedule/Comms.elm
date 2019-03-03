@@ -4,7 +4,7 @@ module ACCUSchedule.Comms exposing (fetchPresenters, fetchProposals)
 -}
 
 import ACCUSchedule.Json as Json
-import ACCUSchedule.Model exposing (Model)
+import ACCUSchedule.Model exposing (Model, apiBaseUrl)
 import ACCUSchedule.Msg as Msg
 import Http
 
@@ -12,7 +12,7 @@ import Http
 fetchProposals : Model -> Cmd Msg.Msg
 fetchProposals model =
     Http.get
-        { url = model.apiBaseUrl ++ "/sessions"
+        { url = apiBaseUrl model ++ "/sessions"
         , expect = Http.expectJson Msg.ProposalsResult Json.proposalsDecoder
         }
 
@@ -20,6 +20,6 @@ fetchProposals model =
 fetchPresenters : Model -> Cmd Msg.Msg
 fetchPresenters model =
     Http.get
-        { url = model.apiBaseUrl ++ "/presenters"
+        { url = apiBaseUrl model ++ "/presenters"
         , expect = Http.expectJson Msg.PresentersResult Json.presentersDecoder
         }

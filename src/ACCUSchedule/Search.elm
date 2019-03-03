@@ -1,6 +1,6 @@
 module ACCUSchedule.Search exposing (search)
 
-import ACCUSchedule.Model exposing (Model, presenters)
+import ACCUSchedule.Model exposing (Model, apiBaseUrl, proposalPresenters, proposals)
 import ACCUSchedule.Types exposing (Proposal)
 
 
@@ -15,7 +15,7 @@ presentersMatch term model proposal =
         pmatch p =
             lcontains term p.name
     in
-        List.any pmatch (presenters model proposal)
+    List.any pmatch (proposalPresenters model proposal)
 
 
 search : String -> Model -> List Proposal
@@ -26,6 +26,6 @@ search term model =
                 || lcontains term p.title
                 || presentersMatch term model p
     in
-        model.proposals
-            |> List.filter
-                matches
+    proposals model
+        |> List.filter
+            matches

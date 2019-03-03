@@ -1,7 +1,7 @@
 module ACCUSchedule.Update exposing (update)
 
 import ACCUSchedule.Comms as Comms
-import ACCUSchedule.Model exposing (Model, raisePresenter, raiseProposal)
+import ACCUSchedule.Model exposing (Model, bookmarks, isBookmarked, key, raisePresenter, raiseProposal, setBookmark, setPresenters, setProposals, setUrl)
 import ACCUSchedule.Msg as Msg
 import ACCUSchedule.Routing as Routing
 import ACCUSchedule.Storage as Storage
@@ -29,27 +29,28 @@ update msg model =
                 |> command (Comms.fetchPresenters model)
 
         Msg.ProposalsResult (Ok proposals) ->
-            ( { model | proposals = proposals }, Cmd.none )
+            ( setProposals proposals model, Cmd.none )
 
         Msg.ProposalsResult (Err _) ->
             ( model, Cmd.none )
 
         Msg.PresentersResult (Ok presenters) ->
-            ( { model | presenters = presenters }, Cmd.none )
+            ( setPresenters presenters model, Cmd.none )
 
         Msg.PresentersResult (Err _) ->
             ( model, Cmd.none )
 
         Msg.ToggleBookmark id ->
             let
-                bookmarks =
-                    if List.member id model.bookmarks then
-                        List.filter (\pid -> pid /= id) model.bookmarks
+                m =
+                    setBookmark id model (not (isBookmarked id model))
 
-                    else
-                        id :: model.bookmarks
+                bmarks =
+                    List.map
+                        .id
+                        (bookmarks m)
             in
-            ( { model | bookmarks = bookmarks }, Storage.store bookmarks )
+            ( m, Storage.store bmarks )
 
         Msg.RaiseProposal raised id ->
             singleton model
@@ -60,15 +61,15 @@ update msg model =
                 |> map (raisePresenter raised id)
 
         Msg.SetSearchTerm term ->
-            ( model, Nav.replaceUrl model.key (Routing.searchUrl term) )
+            ( model, Nav.replaceUrl (key model) (Routing.searchUrl term) )
 
         Msg.LinkClicked urlRequest ->
             case urlRequest of
                 Browser.Internal url ->
-                    ( model, Nav.pushUrl model.key (Url.toString url) )
+                    ( model, Nav.pushUrl (key model) (Url.toString url) )
 
                 Browser.External href ->
                     ( model, Nav.load href )
 
         Msg.UrlChange url ->
-            ( { model | url = url }, Cmd.none )
+            ( setUrl url model, Cmd.none )

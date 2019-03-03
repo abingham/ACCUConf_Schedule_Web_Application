@@ -9,6 +9,7 @@ import ACCUSchedule.View exposing (view)
 import Browser
 import Browser.Events
 import Platform.Sub
+import Set
 
 
 type alias Flags =
@@ -25,8 +26,11 @@ main =
         { init =
             \flags url key ->
                 let
+                    bmarkSet =
+                        Set.fromList flags.bookmarks
+
                     model =
-                        initialModel flags.apiBaseUrl flags.bookmarks key url flags.width flags.height
+                        initialModel flags.apiBaseUrl bmarkSet key url flags.width flags.height
                 in
                 ( model
                 , Cmd.batch

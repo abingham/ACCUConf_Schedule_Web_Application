@@ -30,7 +30,7 @@ This is just convenience for parsing the route.
 -}
 findProposal : Model.Model -> Types.ProposalId -> Maybe Types.Proposal
 findProposal model id =
-    List.filter (\p -> p.id == id) model.proposals |> List.head
+    List.filter (\p -> p.id == id) (Model.proposals model) |> List.head
 
 
 {-| Find a presenter based on a string representation of its id.
@@ -40,7 +40,7 @@ This is just convenience for parsing the route.
 -}
 findPresenter : Model.Model -> Types.PresenterId -> Maybe Types.Presenter
 findPresenter model id =
-    List.filter (\p -> p.id == id) model.presenters |> List.head
+    List.filter (\p -> p.id == id) (Model.presenters model) |> List.head
 
 
 sessionView : List (Element.Attribute Msg.Msg) -> Model.Model -> List Types.Proposal -> Sessions.Session -> Element.Element Msg.Msg
@@ -118,11 +118,16 @@ dayView attrs model proposals day =
 -}
 agendaView : List (Element.Attribute Msg.Msg) -> Model.Model -> Element.Element Msg.Msg
 agendaView attrs model =
-    model.proposals
-        |> List.filter (\p -> List.member p.id model.bookmarks)
-        >> List.sortBy (.session >> Sessions.ordinal)
-        >> List.map (\p -> proposalCard [] model p)
-        >> Card.flow attrs
+    text "agenda view"
+
+
+
+-- List.map
+--     (dayView attrs model model.agenda)
+--     |> List.filter (\p -> List.member p.id model.bookmarks)
+--     >> List.sortBy (.session >> Sessions.ordinal)
+--     >> List.map (\p -> proposalCard [] model p)
+--     >> Card.flow attrs
 
 
 {-| Display a single presenter
@@ -137,7 +142,7 @@ presenterView attrs model presenter =
 
 presentersView : List (Element.Attribute Msg.Msg) -> Model.Model -> Element.Element Msg.Msg
 presentersView attrs model =
-    model.presenters
+    Model.presenters model
         |> List.sortBy .name
         |> List.map (presenterCard model)
         |> Card.flow attrs
@@ -238,9 +243,9 @@ content model =
             [ width fill ]
 
         ( title, contentElement ) =
-            case Routing.urlToRoute model.url of
+            case Routing.urlToRoute (Model.url model) of
                 Routing.Day day ->
-                    ( Days.toString day, dayView attrs model model.proposals day )
+                    ( Days.toString day, dayView attrs model (Model.proposals model) day )
 
                 Routing.Proposal id ->
                     ( "Proposal"

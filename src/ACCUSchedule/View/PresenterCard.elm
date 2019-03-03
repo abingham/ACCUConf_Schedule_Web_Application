@@ -24,7 +24,7 @@ presenterCard : Model.Model -> Types.Presenter -> Element Msg.Msg
 presenterCard model presenter =
     let
         proposals =
-            Model.proposals model presenter
+            Model.presenterProposals model presenter
 
         proposalLinks =
             List.map
