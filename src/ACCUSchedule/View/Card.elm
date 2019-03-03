@@ -64,6 +64,13 @@ actions =
         ]
 
 
-flow : List (Element Msg.Msg) -> Element Msg.Msg
-flow =
-    wrappedRow [ padding 10, spacing 10 ]
+flow : List (Element.Attribute Msg.Msg) -> List (Element Msg.Msg) -> Element Msg.Msg
+flow attrs =
+    let
+        defaultAttrs =
+            [ padding 10, spacing 10 ]
+
+        fullAttrs =
+            defaultAttrs ++ attrs
+    in
+    wrappedRow fullAttrs

@@ -91,7 +91,7 @@ sessionView model props session =
             in
             column []
                 [ text label
-                , Card.flow cards
+                , Card.flow [] cards
                 ]
 
 
@@ -120,7 +120,7 @@ agendaView model =
         |> List.filter (\p -> List.member p.id model.bookmarks)
         >> List.sortBy (.session >> Sessions.ordinal)
         >> List.map (\p -> proposalCard model p)
-        >> Card.flow
+        >> Card.flow []
 
 
 {-| Display a single presenter
@@ -138,7 +138,7 @@ presentersView model =
     model.presenters
         |> List.sortBy .name
         |> List.map (presenterCard model)
-        |> Card.flow
+        |> Card.flow []
 
 
 searchView : String -> Model.Model -> Element.Element Msg.Msg
@@ -147,7 +147,7 @@ searchView term model =
         proposalCards =
             Search.search term model
                 |> List.map (proposalCard model)
-                |> Card.flow
+                |> Card.flow []
     in
     column [ width fill ]
         [ row [ width fill ]
