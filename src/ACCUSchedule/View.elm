@@ -99,8 +99,8 @@ sessionView attrs model props session =
 
 {-| Display all proposals for a particular day.
 -}
-dayView : List (Element.Attribute Msg.Msg) -> Model.Model -> List Types.Proposal -> Days.Day -> Element.Element Msg.Msg
-dayView attrs model proposals day =
+dayView : List (Element.Attribute Msg.Msg) -> Model.Model -> Days.Day -> List Types.Proposal -> Element.Element Msg.Msg
+dayView attrs model day proposals =
     let
         props =
             List.filter (.day >> (==) day) proposals
@@ -118,16 +118,17 @@ dayView attrs model proposals day =
 -}
 agendaView : List (Element.Attribute Msg.Msg) -> Model.Model -> Element.Element Msg.Msg
 agendaView attrs model =
-    text "agenda view"
-
-
-
--- List.map
---     (dayView attrs model model.agenda)
---     |> List.filter (\p -> List.member p.id model.bookmarks)
---     >> List.sortBy (.session >> Sessions.ordinal)
---     >> List.map (\p -> proposalCard [] model p)
---     >> Card.flow attrs
+    let
+        agendaDays =
+            List.map
+                (\day ->
+                    Model.bookmarks model
+                        |> List.filter (.day >> (==) day)
+                        |> dayView [] model day
+                )
+                Days.conferenceDays
+    in
+    column attrs agendaDays
 
 
 {-| Display a single presenter
@@ -245,7 +246,7 @@ content model =
         ( title, contentElement ) =
             case Routing.urlToRoute (Model.url model) of
                 Routing.Day day ->
-                    ( Days.toString day, dayView attrs model (Model.proposals model) day )
+                    ( Days.toString day, dayView attrs model day (Model.proposals model) )
 
                 Routing.Proposal id ->
                     ( "Proposal"
