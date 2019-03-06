@@ -224,7 +224,7 @@ header title =
         navLinks =
             List.append dayLinks [ presentersLink, agendaLink, searchLink ]
     in
-    bodyRow [ Element.Background.color Theme.background ]
+    bodyRow [ Element.Background.color Theme.background, height shrink ]
         [ column [ width fill, spacing 20 ]
             [ wrappedRow [ spacing 20, width fill ]
                 [ image [ width shrink ] { src = "/img/accu-logo.png", description = "ACCU logo" }
@@ -298,7 +298,7 @@ footerLink =
 
 footer : Element Msg.Msg
 footer =
-    bodyRow [ Element.Background.color Theme.background ]
+    bodyRow [ Element.Background.color Theme.background, height shrink ]
         [ wrappedRow [ paddingXY 0 10, spacing 20, width fill ]
             [ text "ACCU 2019 Schedule"
             , footerLink []
